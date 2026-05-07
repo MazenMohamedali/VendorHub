@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\ac#2\\iaproject\\vendorhubapi\\vendorhub\\vendorhub\\models\\vendorhubdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\models\\vendorhubdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20260507065638_PermissionsAndStringEnums.cs",
+              "DocumentMoniker": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs",
+              "RelativeDocumentMoniker": "VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs",
+              "ToolTip": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs",
+              "RelativeToolTip": "VendorHub\\Migrations\\20260507065638_PermissionsAndStringEnums.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T06:56:38.226Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "VendorHubDbContext.cs",
+              "DocumentMoniker": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\Models\\VendorHubDbContext.cs",
+              "RelativeDocumentMoniker": "VendorHub\\Models\\VendorHubDbContext.cs",
+              "ToolTip": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\Models\\VendorHubDbContext.cs",
+              "RelativeToolTip": "VendorHub\\Models\\VendorHubDbContext.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAIwDQAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-07T06:49:30.356Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
