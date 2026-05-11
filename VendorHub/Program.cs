@@ -11,6 +11,7 @@ using VendorHub.Hubs;
 using VendorHub.Models;
 using VendorHub.Repository;
 using VendorHub.Services;
+using VendorHub.Services.Caching;
 using VendorHub.Settings;
 
 namespace VendorHub
@@ -33,6 +34,21 @@ namespace VendorHub
             #endregion
 
             // Add services to the container.
+            builder.Services.AddMemoryCache();
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = builder.Configuration.GetConnectionString("RedisConnection");
+                options.InstanceName = "VendorHub_";
+            });
+
+            builder.Services.AddScoped<ICacheService, CacheService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
+
+            builder.Services
+            .AddGraphQLServer()
+            .AddQueryType<Query>()
+            .AddFiltering()
+            .AddSorting();
 
             builder.Services
                 .AddControllers(options =>

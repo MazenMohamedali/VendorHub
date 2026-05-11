@@ -7,6 +7,7 @@ namespace VendorHub.Services
 {
     public interface IProductService
     {
+        public Task<GeneralResponse<IEnumerable<ProductCardDto>>> GetHotProductsAsync(int count);
         Task<GeneralResponse<ProductDetailsWithStatusDto>> AddAsync(AddProductDto productFromRequest);
         Task<GeneralResponse> ApproveProductAsync(int id);
         Task<GeneralResponse> DeleteProductAsync(int id);

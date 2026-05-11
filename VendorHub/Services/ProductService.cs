@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using VendorHub.DTOs.ProductDto;
 using VendorHub.DTOs.sharedDto;
 using VendorHub.Helpers;
 using VendorHub.Models;
 using VendorHub.Repository;
+using VendorHub.Services.Caching;
 using VendorHub.Settings;
 
 namespace VendorHub.Services
@@ -17,13 +16,37 @@ namespace VendorHub.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IGeneralRepository<Product> _productRepository;
         private readonly ProductHelper _productHelper;
+        private readonly ICacheService _cacheService;
 
-        public ProductService(IWebHostEnvironment webHostEnvironment, IOptions<JwtOptions> options, IGeneralRepository<Product> productRepository)
+        public ProductService(IWebHostEnvironment webHostEnvironment, IOptions<JwtOptions> options, IGeneralRepository<Product> productRepository, ICacheService cacheService)
         {
             _webHostEnvironment = webHostEnvironment;
             _productRepository = productRepository;
             _productHelper = new ProductHelper();
+            _cacheService = cacheService;
         }
+
+        #region Hot Product With Caching
+        public async Task<GeneralResponse<IEnumerable<ProductCardDto>>> GetHotProductsAsync(int count = 6)
+        {
+            var products = await _cacheService.GetOrSetAsync(
+                key: CacheKeys.TOP_PRODUCTS,
+                factory: async () =>
+                {
+                    return await _productRepository.GetAll()
+                        .Where(p => p.Status == ProductStatus.REVIEWED)
+                        .OrderByDescending(p => p.ViewersNo)
+                        .ThenByDescending(p => p.OverallStars)
+                        .Take(count)
+                        .Select(ProductToCardDto())
+                        .ToListAsync();
+                },
+                expiration: CacheKeys.TOP_PRODUCTS_TTL
+            );
+
+            return new GeneralResponse<IEnumerable<ProductCardDto>>().Succeeded(products);
+        }
+        #endregion
 
         #region Filter Products 
         public async Task<GeneralResponse<IEnumerable<ProductCardDto>>> GetFilteredProductsAsync(Expression<Func<Product, bool>> filter, string errorMessage = "No products found matching your criteria")
