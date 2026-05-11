@@ -10,7 +10,7 @@ namespace VendorHub.DTOs.CategoryDto
         public string Name { get; set; }
 
 
-        [Required(ErrorMessage = "Category image URL is required")]
-        public string? ImageUrl { get; set; }
+        [Required(ErrorMessage = "Category image is required")]
+        public IFormFile ImageFile { get; set; }
     }
 }

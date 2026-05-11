@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "KJPSjOcQR8g=",
+  "dgSpecHash": "glVbU9SkHqI=",
   "success": true,
-  "projectFilePath": "D:\\AC#2\\IAProject\\VendorHubAPI\\VendorHub\\VendorHub\\VendorHub.csproj",
+  "projectFilePath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\FABRIKA\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\FABRIKA\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -69,5 +69,15 @@
     "C:\\Users\\FABRIKA\\.nuget\\packages\\system.security.permissions\\9.0.0\\system.security.permissions.9.0.0.nupkg.sha512",
     "C:\\Users\\FABRIKA\\.nuget\\packages\\system.windows.extensions\\9.0.0\\system.windows.extensions.9.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "projectPath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

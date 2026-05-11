@@ -10,10 +10,12 @@ namespace VendorHub.Services
     public class CategoryService : ICategoryService
     {
         private readonly IGeneralRepository<Category> _categoryRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CategoryService(IGeneralRepository<Category> categoryRepository)
+        public CategoryService(IGeneralRepository<Category> categoryRepository, IWebHostEnvironment webHostEnvironment)
         {
             _categoryRepository = categoryRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         #region Filter Categories
@@ -43,19 +45,32 @@ namespace VendorHub.Services
             var exists = await _categoryRepository.GetAll().AnyAsync(c => c.Name.ToLower() == dto.Name.ToLower());
             if (exists) return new GeneralResponse<CategoryDetailsDto>().Failed("Category already exists");
 
-            var category = new Category
-            {
-                Name = dto.Name,
-                ImageUrl = dto.ImageUrl,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
+            var category = new Category { Name = dto.Name };
 
             await _categoryRepository.AddAsync(category);
             await _categoryRepository.SaveAsync();
 
+            if (dto.ImageFile != null) await AddImageToCategoryAsync(dto.ImageFile, category);
+
             var result = CategoryToDetailsDto().Compile()(category);
             return new GeneralResponse<CategoryDetailsDto>().Succeeded(result, "Category created successfully");
+        }
+
+        private async Task AddImageToCategoryAsync(IFormFile imageFile, Category category)
+        {
+            string extension = Path.GetExtension(imageFile.FileName);
+            string fileName = $"{category.Id}{extension}";
+            string imagesFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Categories");
+
+            if (!Directory.Exists(imagesFolder)) Directory.CreateDirectory(imagesFolder);
+
+            string filePath = Path.Combine(imagesFolder, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+                await imageFile.CopyToAsync(stream);
+
+            category.ImageUrl = fileName;
+            await _categoryRepository.UpdateAsync(category);
+            await _categoryRepository.SaveAsync();
         }
 
         public async Task<GeneralResponse<CategoryDetailsDto>> UpdateAsync(int id, UpdateCategoryDto dto)
@@ -86,7 +101,6 @@ namespace VendorHub.Services
             var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null) return new GeneralResponse().Failed("Category not found");
 
-            // Soft delete
             category.IsActive = false;
             await _categoryRepository.SaveAsync();
             return new GeneralResponse().Succeeded("Category deactivated successfully");
