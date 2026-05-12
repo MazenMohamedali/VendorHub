@@ -9,16 +9,17 @@ services:
       ACCEPT_EULA: ${MSSQL_ACCEPT_EULA}
       MSSQL_PID: "Developer"
     ports:
-      - "15001:1433"
+      - "1433:1433"
     volumes:
       - sqldata:/var/opt/mssql
     networks:
       - backend-net
-    # healthcheck:
-    #   test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${MSSQL_SA_PASSWORD}", "-Q", "SELECT 1"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+    restart: always
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${MSSQL_SA_PASSWORD}", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:alpine
@@ -40,11 +41,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-
+    container_name: vendorhub-api-prod
     env_file:
       - .env
-
-    container_name: vendorhub-api
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
@@ -53,7 +52,7 @@ services:
       JWT__SecritKey: ${JWT_SECRET_KEY}
       JWT__IssuerIP: ${JWT_ISSUER}
       JWT__AudienceIP: ${JWT_AUDIENCE}
-      JwtOptions__IssuerIP: "http://api:8080"
+      JwtOptions__IssuerIP: ${JWT_ISSUER}
     ports:
       - "7001:8080"
 
@@ -65,7 +64,7 @@ services:
     networks:
       - frontend-net
       - backend-net
-    restart: unless-stopped
+    restart: always
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
     #   interval: 30s
@@ -73,19 +72,19 @@ services:
     #   retries: 3
     #   start_period: 40s
 
-  adminer:
-    image: adminer
-    container_name: vendorhub-adminer
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mssql
-    networks:
-      - frontend-net
-      - backend-net
-    environment:
-      ADMINER_DEFAULT_SERVER: mssql
-    restart: unless-stopped
+  # adminer:
+  #   image: adminer
+  #   container_name: vendorhub-adminer
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - mssql
+  #   networks:
+  #     - frontend-net
+  #     - backend-net
+  #   environment:
+  #     ADMINER_DEFAULT_SERVER: mssql
+  #   restart: unless-stopped
 
 
 

@@ -23,18 +23,11 @@ namespace VendorHub
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            #region Understand what this do
-            // After building the app or during configuration:
             var jwtOptions = builder.Configuration.GetSection("JwtOptions").Get<JwtOptions>();
             ProductHelper.BaseImageUrl = $"{jwtOptions?.IssuerIP}/Images/Products";
-            #endregion
 
-
-            #region SignalR
             builder.Services.AddSignalR();
-            #endregion
 
-            // Add services to the container.
             builder.Services.AddMemoryCache();
             builder.Services.AddStackExchangeRedisCache(options =>
             {
@@ -63,7 +56,10 @@ namespace VendorHub
             
 
             builder.Services.AddOpenApi();
-            builder.Services.AddSwaggerGen();
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddSwaggerGen();
+            }
 
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
@@ -75,6 +71,7 @@ namespace VendorHub
 
                 if (builder.Environment.IsDevelopment())
                     options.EnableDetailedErrors();
+                else options.EnableSensitiveDataLogging = false;
             });
 
 
@@ -157,16 +154,13 @@ namespace VendorHub
    
             var app = builder.Build();
 
-            #region SignalR
-            // ? Map the hub to a route
+            app.MapHealthChecks("/health");
             app.MapHub<NotificationHub>("/notificationHub");
-            // ? Very important: Enable WebSocket support
             app.UseWebSockets();
-            #endregion
 
             // middleWare
-            // if (app.Environment.IsDevelopment())
-            // {
+            if (app.Environment.IsDevelopment())
+            {
                 app.Use(async (context, next) =>
                 {
                     if (context.Request.Path == "/")
@@ -179,7 +173,7 @@ namespace VendorHub
 
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            // }
+            }
 
             app.UseStaticFiles();
 
@@ -207,6 +201,9 @@ namespace VendorHub
                     phone: "01234567891"
                 );
             }
+
+            
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }
