@@ -165,8 +165,8 @@ namespace VendorHub
             #endregion
 
             // middleWare
-            if (app.Environment.IsDevelopment())
-            {
+            // if (app.Environment.IsDevelopment())
+            // {
                 app.Use(async (context, next) =>
                 {
                     if (context.Request.Path == "/")
@@ -179,7 +179,7 @@ namespace VendorHub
 
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            }
+            // }
 
             app.UseStaticFiles();
 
@@ -194,6 +194,8 @@ namespace VendorHub
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var dbContext = services.GetRequiredService<VendorHubDbContext>();
+                await dbContext.Database.MigrateAsync();
                 await PermissionSeeder.SeedAsync(services);
                 await RoleSeeder.SeedAsync(services);
                 var accountService = scope.ServiceProvider.GetRequiredService<IAccountService>();
