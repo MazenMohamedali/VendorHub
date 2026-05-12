@@ -31,4 +31,3 @@
         public int PreviousPage => HasPreviousPage ? Page - 1 : Page;
     }
 }
-}

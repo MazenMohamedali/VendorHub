@@ -18,6 +18,8 @@ namespace VendorHub.Services
         private readonly IGeneralRepository<User> _userRepository;
         private readonly IGeneralRepository<Vendor> _vendorRepository;
         private readonly INotificationService _notificationService;
+        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly IGeneralRepository<Notification> _notificationRepository;
 
         public OrderService(
             IGeneralRepository<Order> orderRepository,
@@ -25,7 +27,10 @@ namespace VendorHub.Services
             IGeneralRepository<Product> productRepository,
             IGeneralRepository<User> userRepository,
             IGeneralRepository<Vendor> vendorRepository,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IHubContext<NotificationHub> hubContext,
+            IGeneralRepository<Notification> notificationRepository
+            )
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
@@ -33,6 +38,8 @@ namespace VendorHub.Services
             _userRepository = userRepository;
             _vendorRepository = vendorRepository;
             _notificationService = notificationService;
+            _hubContext = hubContext;
+            _notificationRepository = notificationRepository;
         }
 
         #region orders

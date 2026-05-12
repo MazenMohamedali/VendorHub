@@ -113,7 +113,7 @@ namespace VendorHub.Services
 
             if (productFromRequest.ImageFile != null)
             {
-                string oldPath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Products", product.ImgUrl ?? "");
+                string oldPath = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Products", product.ImgUrl ?? "");
                 if (File.Exists(oldPath)) File.Delete(oldPath);
 
                 await AddImageToProduct(productFromRequest.ImageFile, product);
@@ -298,13 +298,13 @@ namespace VendorHub.Services
 
         private async Task AddImageToProduct(IFormFile ImageFile, Product productFromDB)
         {
-            string extension = Path.GetExtension(ImageFile.FileName);
+            string extension = System.IO.Path.GetExtension(ImageFile.FileName);
             string fileName = $"{productFromDB.Id}{extension}";
-            string imagesFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Products");
+            string imagesFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Products");
 
             if (!Directory.Exists(imagesFolder)) Directory.CreateDirectory(imagesFolder);
 
-            string filePath = Path.Combine(imagesFolder, fileName);
+            string filePath = System.IO.Path.Combine(imagesFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await ImageFile.CopyToAsync(stream);

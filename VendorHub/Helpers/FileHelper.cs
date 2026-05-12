@@ -5,7 +5,7 @@
         public static async Task SaveFileAsync(string folderPath, string fileName, IFormFile file)
         {
 
-            string fullFilePath = Path.Combine(folderPath, fileName);
+            string fullFilePath = System.IO.Path.Combine(folderPath, fileName);
             using (FileStream fileStream = new FileStream(fullFilePath, FileMode.Create))
             {
                 await file.CopyToAsync(fileStream);

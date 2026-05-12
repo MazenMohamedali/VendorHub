@@ -58,13 +58,13 @@ namespace VendorHub.Services
 
         private async Task AddImageToCategoryAsync(IFormFile imageFile, Category category)
         {
-            string extension = Path.GetExtension(imageFile.FileName);
+            string extension = System.IO.Path.GetExtension(imageFile.FileName);
             string fileName = $"{category.Id}{extension}";
-            string imagesFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Categories");
+            string imagesFolder = System.IO.Path.Combine(_webHostEnvironment.WebRootPath, "Images", "Categories");
 
             if (!Directory.Exists(imagesFolder)) Directory.CreateDirectory(imagesFolder);
 
-            string filePath = Path.Combine(imagesFolder, fileName);
+            string filePath = System.IO.Path.Combine(imagesFolder, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await imageFile.CopyToAsync(stream);
 

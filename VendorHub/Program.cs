@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
 using VendorHub.Filters;
+using VendorHub.GraphQL;
 using VendorHub.Helpers;
 using VendorHub.Hubs;
 using VendorHub.Models;

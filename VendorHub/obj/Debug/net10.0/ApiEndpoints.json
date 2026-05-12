@@ -85,6 +85,26 @@
   },
   {
     "ContainingType": "VendorHub.Controllers.AccountController",
+    "Method": "GetProfile",
+    "RelativePath": "api/Account/profile",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.UserDto.ProfileDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.AccountController",
     "Method": "RegisterAdmin",
     "RelativePath": "api/Account/register/admin",
     "HttpMethod": "POST",
@@ -158,6 +178,84 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "VendorHub.Controllers.AccountController",
+    "Method": "UpdateCustomerAddress",
+    "RelativePath": "api/Account/update-address",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "VendorHub.DTOs.UserDto.UpdateAddressDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.UserDto.ProfileDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.AccountController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/Account/update-profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "VendorHub.DTOs.UserDto.UpdateProfileDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.UserDto.ProfileDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.AccountController",
+    "Method": "UpdateVendorStoreName",
+    "RelativePath": "api/Account/update-store-name",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "VendorHub.DTOs.UserDto.UpdateStoreNameDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.UserDto.ProfileDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "VendorHub.Controllers.CategoryController",
     "Method": "Create",
     "RelativePath": "api/Category",
@@ -166,9 +264,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "VendorHub.DTOs.CategoryDto.CreateCategoryDto",
-        "IsRequired": true
+        "Name": "Name",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ImageFile",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -439,6 +542,37 @@
   },
   {
     "ContainingType": "VendorHub.Controllers.OrderController",
+    "Method": "UpdateOrderStatus",
+    "RelativePath": "api/Order/{orderId}/status",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "VendorHub.DTOs.OrderDto.UpdateOrderStatusDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.OrderController",
     "Method": "GetCustomerOrders",
     "RelativePath": "api/Order/my-orders",
     "HttpMethod": "GET",
@@ -457,6 +591,88 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.OrderController",
+    "Method": "GetVendorOrders",
+    "RelativePath": "api/Order/vendor-orders",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "page",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "pageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "statusFilter",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.sharedDto.PagedResult\u00601[[VendorHub.DTOs.OrderDto.VendorOrderDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.OrderController",
+    "Method": "GetVendorOrdersStats",
+    "RelativePath": "api/Order/vendor-orders-stats",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.OrderDto.VendorOrdersStatsDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.OrderController",
+    "Method": "GetVendorOrderById",
+    "RelativePath": "api/Order/vendor-orders/{orderId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[VendorHub.DTOs.OrderDto.VendorOrderDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "VendorHub.Controllers.PermissionController",
@@ -1163,5 +1379,25 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VendorHub.Controllers.VendorController",
+    "Method": "GetVendors",
+    "RelativePath": "api/Vendor",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "VendorHub.DTOs.sharedDto.GeneralResponse\u00601[[System.Collections.Generic.IEnumerable\u00601[[VendorHub.DTOs.Vendors.VendorDetailsDto, VendorHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
   }
 ]
