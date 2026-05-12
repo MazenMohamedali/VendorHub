@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using VendorHub.DTOs.sharedDto;
 using VendorHub.DTOs.UserDto;
@@ -18,6 +19,123 @@ namespace VendorHub.Controllers
             _accountService = accountService;
         }
 
+        #region newMethods
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<ActionResult<GeneralResponse<ProfileDto>>> GetProfile()
+        {
+            var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized("Invalid user");
+
+            var result = await _accountService.GetProfileAsync(userId);
+
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        [HttpPut("update-profile")]
+        [Authorize]
+        public async Task<ActionResult<GeneralResponse<ProfileDto>>> UpdateProfile([FromBody] UpdateProfileDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!IsValidInput(dto))
+                return BadRequest("Invalid input");
+
+            var userId = GetUserId();
+            if (userId == 0)
+                return Unauthorized("Invalid user");
+
+            var result = await _accountService.UpdateProfileAsync(userId, dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPut("update-address")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<GeneralResponse<ProfileDto>>> UpdateCustomerAddress([FromBody] UpdateAddressDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Address) || dto.Address.Length < 5)
+                return BadRequest("Address must be at least 5 characters");
+
+            var userId = GetUserId();
+
+            var currentProfile = await _accountService.GetProfileAsync(userId);
+            if (!currentProfile.Success)
+                return NotFound(currentProfile);
+
+            var updateDto = new UpdateProfileDto
+            {
+                FirstName = currentProfile.Data.FirstName,
+                SecondName = currentProfile.Data.SecondName,
+                PhoneNumber = currentProfile.Data.PhoneNumber,
+                Address = dto.Address
+            };
+
+            var result = await _accountService.UpdateProfileAsync(userId, updateDto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPut("update-store-name")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<ActionResult<GeneralResponse<ProfileDto>>> UpdateVendorStoreName([FromBody] UpdateStoreNameDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.StoreName) || dto.StoreName.Length < 3)
+                return BadRequest("Store name must be at least 3 characters");
+
+            var userId = GetUserId();
+
+            var currentProfile = await _accountService.GetProfileAsync(userId);
+            if (!currentProfile.Success)
+                return NotFound(currentProfile);
+
+            var updateDto = new UpdateProfileDto
+            {
+                FirstName = currentProfile.Data.FirstName,
+                SecondName = currentProfile.Data.SecondName,
+                PhoneNumber = currentProfile.Data.PhoneNumber,
+                StoreName = dto.StoreName
+            };
+
+            var result = await _accountService.UpdateProfileAsync(userId, updateDto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        }
+
+        private bool IsValidInput(UpdateProfileDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.FirstName) || dto.FirstName.Length < 2)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(dto.SecondName) || dto.SecondName.Length < 2)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(dto.PhoneNumber))
+                return false;
+
+            return true;
+        }
+    
+        #endregion
 
         #region Registration & Auth
         [HttpPost("register/customer")]

@@ -17,5 +17,7 @@ namespace VendorHub.Services
         Task<GeneralResponse> RegisterCustomerAsync(RegisterCustomerDto dto);
         Task<GeneralResponse> RegisterVendorAsync(RegisterVendorDto dto);
         Task<GeneralResponse> RejectVendorAsync(int vendorId);
+        Task<GeneralResponse<ProfileDto>> UpdateProfileAsync(int userId, UpdateProfileDto dto);
+        Task<GeneralResponse<ProfileDto>> GetProfileAsync(int userId);  
     }
 }

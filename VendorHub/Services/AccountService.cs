@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using VendorHub.DTOs.sharedDto;
 using VendorHub.DTOs.UserDto;
 using VendorHub.Models;
+using VendorHub.Repository;
 using VendorHub.Settings;
 
 namespace VendorHub.Services
@@ -18,18 +19,150 @@ namespace VendorHub.Services
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly JwtOptions _jwtOptions;
+        private readonly IGeneralRepository<Customer> _customerRepository;
+        private readonly IGeneralRepository<Vendor> _vendorRepository;
+        private readonly IGeneralRepository<User> _userRepository;
 
         public AccountService(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            IConfiguration configuration, IOptions<JwtOptions> options)
+            IConfiguration configuration, 
+            IOptions<JwtOptions> options,
+            IGeneralRepository<Customer> customerRepository,
+            IGeneralRepository<Vendor> vendorRepository,
+            IGeneralRepository<User> userRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _jwtOptions = options.Value;
+            _customerRepository = customerRepository;
+            _vendorRepository = vendorRepository;
+            _userRepository = userRepository;
         }
 
+
+        #region newMethods
+        public async Task<GeneralResponse<ProfileDto>> GetProfileAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GeneralResponse<ProfileDto>().Failed("User not found");
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? "Unknown";
+
+            var profile = await BuildProfileDto(user, role);
+
+            return new GeneralResponse<ProfileDto>().Succeeded(profile, "Profile retrieved successfully");
+        }
+
+        public async Task<GeneralResponse<ProfileDto>> UpdateProfileAsync(int userId, UpdateProfileDto dto)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                return new GeneralResponse<ProfileDto>().Failed("User not found");
+            }
+
+            if (!IsValidPhoneNumber(dto.PhoneNumber))
+            {
+                return new GeneralResponse<ProfileDto>().Failed("Invalid phone number");
+            }
+
+            UpdateUserBasicInfo(user, dto);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? "Unknown";
+
+            await UpdateRoleSpecificInfo(userId, role, dto);
+
+            await _userRepository.UpdateAsync(user);
+            await _userRepository.SaveAsync();
+
+            var profile = await BuildProfileDto(user, role);
+
+            return new GeneralResponse<ProfileDto>().Succeeded(profile, "Profile updated successfully");
+        }
+
+        private void UpdateUserBasicInfo(User user, UpdateProfileDto dto)
+        {
+            user.FirstName = dto.FirstName?.Trim() ?? user.FirstName;
+            user.SecondName = dto.SecondName?.Trim() ?? user.SecondName;
+            user.PhoneNumber = dto.PhoneNumber?.Trim();
+        }
+
+        private async Task UpdateRoleSpecificInfo(int userId, string role, UpdateProfileDto dto)
+        {
+            if (role == "Vendor" && !string.IsNullOrWhiteSpace(dto.StoreName))
+            {
+                var vendor = await _vendorRepository.GetByIdAsync(userId);
+                if (vendor != null)
+                {
+                    vendor.StoreName = dto.StoreName.Trim();
+                    await _vendorRepository.UpdateAsync(vendor);
+                }
+                return;
+            }
+            
+            if (role == "Customer" && !string.IsNullOrWhiteSpace(dto.Address))
+            {
+                var customer = await _customerRepository.GetByIdAsync(userId);
+                if (customer != null)
+                {
+                    customer.Address = dto.Address.Trim();
+                    await _customerRepository.UpdateAsync(customer);
+                }
+            }
+        }
+
+        private async Task<ProfileDto> BuildProfileDto(User user, string role)
+        {
+            var dto = new ProfileDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                SecondName = user.SecondName,
+                PhoneNumber = user.PhoneNumber,
+                Role = role,
+                AccountStatus = user.AccountStatus.ToString(),
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            if (role == "Vendor")
+            {
+                var vendor = await _vendorRepository.GetByIdAsync(user.Id);
+                if (vendor != null)
+                {
+                    dto.StoreName = vendor.StoreName;
+                    dto.Balance = vendor.Balance;
+                }
+                return dto;
+            }
+            
+            if (role == "Customer")
+            {
+                var customer = await _customerRepository.GetByIdAsync(user.Id);
+                if (customer != null)
+                    dto.Address = customer.Address;
+            }
+
+            return dto;
+        }
+
+        private bool IsValidPhoneNumber(string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                return false;
+
+            var cleaned = phoneNumber.Replace(" ", "").Replace("-", "").Replace("+", "");
+            return cleaned.All(char.IsDigit) && phoneNumber.Length >= 7 && phoneNumber.Length <= 15;
+        }
+        #endregion
 
         #region Registeration Methods
         public async Task<GeneralResponse> RegisterCustomerAsync(RegisterCustomerDto dto)

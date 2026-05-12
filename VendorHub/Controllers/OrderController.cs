@@ -19,6 +19,73 @@ namespace VendorHub.Controllers
             _orderService = orderService;
         }
 
+        #region new Endpoints
+        [HttpGet("vendor-orders")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<ActionResult<GeneralResponse<PagedResult<VendorOrderDto>>>> GetVendorOrders(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? statusFilter = null)
+        {
+            var vendorId = GetUserId();
+            var result = await _orderService.GetVendorOrdersAsync(vendorId, page, pageSize, statusFilter);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("vendor-orders/{orderId}")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<ActionResult<GeneralResponse<VendorOrderDto>>> GetVendorOrderById(int orderId)
+        {
+            var vendorId = GetUserId();
+            var result = await _orderService.GetVendorOrderByIdAsync(orderId, vendorId);
+
+            if (!result.Success)
+                return NotFound(result);
+
+            return Ok(result);
+        }
+
+        [HttpPatch("{orderId}/status")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<ActionResult<GeneralResponse>> UpdateOrderStatus(
+            int orderId,
+            [FromBody] UpdateOrderStatusDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var vendorId = GetUserId();
+            var result = await _orderService.UpdateOrderStatusAsync(orderId, vendorId, dto);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("vendor-orders-stats")]
+        [Authorize(Roles = "Vendor")]
+        public async Task<ActionResult<GeneralResponse<VendorOrdersStatsDto>>> GetVendorOrdersStats()
+        {
+            var vendorId = GetUserId();
+            var result = await _orderService.GetVendorOrdersStatsAsync(vendorId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+        }
+        #endregion
+
 
         [HttpPost]
         public async Task<ActionResult<GeneralResponse<OrderDetailsDto>>> CreateOrder(CreateOrderDto dto)
