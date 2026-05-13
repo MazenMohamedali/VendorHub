@@ -39,45 +39,49 @@ const Cart = () => {
     }
   };
 
-  const handleFinalSubmit = async (e) => {
-    e.preventDefault();
-    
-    // التحقق من رقم الهاتف
-    if (!validatePhone(checkoutData.phoneNumber)) {
-      setPhoneError("رقم الهاتف غير صحيح. يجب أن يبدأ بـ 01 ويتبعه 8 أرقام.");
-      return;
-    }
+  
+const handleFinalSubmit = async (e) => {
+  e.preventDefault();
+  
+  if (!validatePhone(checkoutData.phoneNumber)) {
+    setPhoneError("رقم الهاتف غير صحيح. يجب أن يبدأ بـ 01 ويتبعه 8 أرقام.");
+    return;
+  }
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    try {
-      // تجهيز كائن الطلب (Order Payload) ليتوافق مع الباك إند
-      // غالباً الباك إند يتوقع قائمة بـ productId والكمية
-      const orderPayload = {
-        deliveryAddress: checkoutData.deliveryAddress,
-        phoneNumber: checkoutData.phoneNumber,
-        items: cartItems.map(item => ({
-          productId: item.id,
-          quantity: item.cartQuantity,
-          price: item.price // نرسل السعر أيضاً للتأكيد أو حسب متطلبات الباك إند
-        }))
-      };
-
-      // إرسال الطلب للباك إند
-      await axiosInstance.post('/Order', orderPayload);
-
-      alert("تم إرسال طلبك بنجاح! شكراً لتسوقك من دكاني.");
-      dispatch(clearCart()); // تفريغ السلة بعد نجاح الطلب
-      setIsCheckoutModalOpen(false);
-      navigate('/my-orders'); // توجيه العميل لصفحة طلباته لمتابعة الحالة
-
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      alert(error.response?.data?.message || "حدث خطأ أثناء إتمام الطلب. يرجى المحاولة لاحقاً.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  // Build payload exactly as Swagger shows
+  const orderPayload = {
+    deliveryAddress: checkoutData.deliveryAddress,
+    phoneNumber: checkoutData.phoneNumber,
+    cartItems: cartItems.map(item => ({
+      productId: Number(item.id),
+      productName: item.title || item.name || 'منتج',
+      price: Number(item.price),
+      quantity: item.cartQuantity,
+      imageUrl: item.images?.[0] || item.imgUrl || ''
+    }))
   };
+
+  console.log("Sending order payload:", orderPayload);
+
+  try {
+    await axiosInstance.post('/Order', orderPayload);
+
+    alert("تم إرسال طلبك بنجاح! شكراً لتسوقك من دكاني.");
+    dispatch(clearCart());
+    setIsCheckoutModalOpen(false);
+    navigate('/my-orders');
+
+  } catch (error) {
+    console.error("Error submitting order:", error);
+    console.error("Response data:", error.response?.data);
+    alert(error.response?.data?.message || "حدث خطأ أثناء إتمام الطلب. يرجى المحاولة لاحقاً.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   if (cartItems.length === 0) {
     return (

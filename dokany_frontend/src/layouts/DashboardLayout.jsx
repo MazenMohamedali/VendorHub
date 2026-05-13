@@ -2,11 +2,17 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Package, ShoppingBag, Settings, LogOut, Bell, X, ShoppingCart } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import signalRService from '../services/signalRService';
 
 const DashboardLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Get user from Redux
+  const user = useSelector((state) => state.auth.user);
+  const userId = user?.id;
+  const userRole = user?.roles?.[0] || (user?.role);
   // حالات الإشعارات (Sockets Simulation)
   const [notifications, setNotifications] = useState([]); // قائمة الإشعارات في الجرس
   const [toasts, setToasts] = useState([]); // الإشعارات المنبثقة (Toasts)
@@ -20,14 +26,57 @@ const DashboardLayout = () => {
     { title: 'الإعدادات', icon: <Settings size={20} />, path: '/vendor/settings' },
   ];
 
-  // 🔴 دالة محاكاة وصول طلب جديد عبر الـ Sockets 🔴
-  // (سيقوم مازن باستبدال هذا الزر بـ socket.on('newOrder', ...))
+  // Connect to SignalR when component mounts
+  useEffect(() => {
+    if (userId && userRole === 'Vendor') {
+      signalRService.startConnection(userId, 'Vendor', (notification) => {
+        console.log('📢 New SignalR notification received:', notification);
+        
+        // Extract order amount from message if available
+        let amount = 0;
+        if (notification.Message) {
+          const match = notification.Message.match(/\d+/);
+          if (match) amount = parseInt(match[0], 10);
+        }
+        
+        // Create notification object for UI
+        const newOrderNotif = {
+          id: notification.OrderId || Date.now(),
+          orderNumber: notification.OrderId || `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+          amount: amount,
+          time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+          title: notification.Title || 'طلب جديد',
+          message: notification.Message || 'تم استلام طلب جديد'
+        };
+        
+        // Add to notifications list (bell)
+        setNotifications(prev => [newOrderNotif, ...prev]);
+        
+        // Add to toasts (popup notifications)
+        setToasts(prev => [...prev, newOrderNotif]);
+        
+        // Auto-hide toast after 5 seconds
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== newOrderNotif.id));
+        }, 5000);
+      });
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      signalRService.stopConnection();
+    };
+  }, [userId, userRole]);
+
+  // دالة محاكاة وصول طلب جديد عبر الـ Sockets (للتجربة)
   const simulateNewSocketOrder = () => {
     const newOrder = {
       id: Date.now(),
       orderNumber: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
       amount: Math.floor(500 + Math.random() * 4500),
-      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+      title: 'طلب جديد',
+      message: 'تم استلام طلب جديد من عميل'
     };
 
     // 1. إضافة الإشعار في القائمة
@@ -40,6 +89,11 @@ const DashboardLayout = () => {
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== newOrder.id));
     }, 5000);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -71,7 +125,7 @@ const DashboardLayout = () => {
         </nav>
 
         <div className="p-4 border-t border-gray-100">
-          <button onClick={() => navigate('/')} className="flex items-center gap-3 px-4 py-3 w-full text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 w-full text-red-500 hover:bg-red-50 rounded-xl transition-colors font-medium">
             <LogOut size={20} />
             تسجيل الخروج
           </button>
@@ -85,7 +139,9 @@ const DashboardLayout = () => {
         <header className="bg-white border-b border-gray-100 h-16 flex items-center justify-between px-6 shrink-0 shadow-sm z-20">
           
           <div className="flex items-center gap-4">
-            <h2 className="text-xl font-bold text-gray-800">مرحباً، تكنو ستور 👋</h2>
+            <h2 className="text-xl font-bold text-gray-800">
+              مرحباً، {user?.storeName || user?.firstName || 'البائع'} 👋
+            </h2>
             {/* زر محاكاة الـ Socket */}
             <button 
               onClick={simulateNewSocketOrder}
@@ -116,7 +172,9 @@ const DashboardLayout = () => {
                 <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                   <span className="font-bold text-gray-800">الإشعارات</span>
                   {notifications.length > 0 && (
-                    <button onClick={() => setNotifications([])} className="text-xs text-dokany hover:underline font-medium">تحديد كـ مقروء</button>
+                    <button onClick={() => setNotifications([])} className="text-xs text-dokany hover:underline font-medium">
+                      تحديد كـ مقروء
+                    </button>
                   )}
                 </div>
                 <div className="max-h-80 overflow-y-auto">
@@ -124,11 +182,11 @@ const DashboardLayout = () => {
                     notifications.map((notif) => (
                       <div key={notif.id} className="p-4 border-b border-gray-50 hover:bg-emerald-50/50 transition-colors cursor-pointer">
                         <div className="flex justify-between items-start mb-1">
-                          <span className="font-bold text-gray-800 text-sm">طلب جديد تم استلامه! 🎉</span>
+                          <span className="font-bold text-gray-800 text-sm">{notif.title || 'طلب جديد تم استلامه! 🎉'}</span>
                           <span className="text-[10px] text-gray-400">{notif.time}</span>
                         </div>
                         <p className="text-xs text-gray-500">
-                          تم إضافة طلب برقم <span className="font-bold text-dokany">{notif.orderNumber}</span> بقيمة {notif.amount} ج.م.
+                          {notif.message || `تم إضافة طلب برقم ${notif.orderNumber} بقيمة ${notif.amount} ج.م.`}
                         </p>
                       </div>
                     ))
@@ -143,7 +201,7 @@ const DashboardLayout = () => {
             )}
 
             <div className="w-9 h-9 bg-dokany-light rounded-full flex items-center justify-center text-dokany font-bold border border-emerald-100 cursor-pointer">
-              ت
+              {user?.firstName?.charAt(0) || 'ب'}
             </div>
           </div>
         </header>
@@ -161,9 +219,9 @@ const DashboardLayout = () => {
                 <ShoppingCart size={20} />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold text-gray-800 text-sm mb-1">طلب شراء جديد!</h4>
+                <h4 className="font-bold text-gray-800 text-sm mb-1">{toast.title || 'طلب شراء جديد!'}</h4>
                 <p className="text-xs text-gray-500 leading-relaxed">
-                  عميل للتو قام بشراء منتجات بقيمة <span className="font-bold text-dokany">{toast.amount} ج.م</span>. (رقم الطلب: {toast.orderNumber})
+                  {toast.message || `عميل للتو قام بشراء منتجات بقيمة ${toast.amount} ج.م. (رقم الطلب: ${toast.orderNumber})`}
                 </p>
               </div>
               <button onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))} className="text-gray-400 hover:text-red-500 transition-colors">

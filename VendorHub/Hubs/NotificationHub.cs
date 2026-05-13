@@ -45,6 +45,32 @@ namespace VendorHub.Hubs
         #endregion
 
         #region ClientMethod
+        public async Task JoinVendorGroup(int vendorId)
+        {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != vendorId.ToString())
+            {
+                await Clients.Caller.SendAsync("Error", "You can only join your own vendor group");
+                return;
+            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"vendor-{vendorId}");
+            await Clients.Caller.SendAsync("GroupJoined", $"vendor-{vendorId}");
+            Console.WriteLine($"✅ Vendor {vendorId} explicitly joined group vendor-{vendorId}");
+        }
+
+        public async Task JoinCustomerGroup(int customerId)
+        {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != customerId.ToString())
+            {
+                await Clients.Caller.SendAsync("Error", "You can only join your own customer group");
+                return;
+            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user-{customerId}");
+            await Clients.Caller.SendAsync("GroupJoined", $"user-{customerId}");
+            Console.WriteLine($"✅ Customer {customerId} explicitly joined group user-{customerId}");
+        }
+
         public async Task SendMessage(string message)
         {
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;

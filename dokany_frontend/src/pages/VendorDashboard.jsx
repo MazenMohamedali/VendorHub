@@ -47,9 +47,13 @@ const VendorDashboard = () => {
         // 4. أخذ أحدث 5 طلبات فقط للعرض السريع في الجدول
         setRecentOrders(orders.slice(0, 5));
 
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      } finally {
+      }catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      if (error.response) {
+        console.error("Response status:", error.response.status);
+        console.error("Response data:", error.response.data);
+      } 
+      }finally {
         setIsLoading(false);
       }
     };

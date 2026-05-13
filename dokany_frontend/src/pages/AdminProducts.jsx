@@ -12,6 +12,7 @@ const AdminProducts = () => {
     try {
       setIsLoading(true);
       const response = await axiosInstance.get('/Product/admin/all');
+      console.log("🔍 Products from API:", response.data.data); // Debug: check actual data
       setProducts(response.data.data || []);
     } catch (error) {
       console.error("Error fetching admin products:", error);
@@ -24,13 +25,36 @@ const AdminProducts = () => {
     fetchAdminProducts();
   }, []);
 
+  // Helper to get status display and badge color
+  const getStatusInfo = (status) => {
+    const normalizedStatus = status?.toString().toUpperCase();
+    switch (normalizedStatus) {
+      case 'PENDING':
+        return { text: 'قيد المراجعة', color: 'bg-amber-100 text-amber-600' };
+      case 'REVIEWED':
+        return { text: 'مقبول', color: 'bg-emerald-100 text-emerald-600' };
+      case 'REJECTED':
+        return { text: 'مرفوض', color: 'bg-red-100 text-red-600' };
+      default:
+        // If status is unknown, treat as pending (for safety)
+        return { text: status || 'قيد المراجعة', color: 'bg-amber-100 text-amber-600' };
+    }
+  };
+
+  // Helper to determine if product is pending (show approve/reject buttons)
+  const isPending = (status) => {
+    const normalizedStatus = status?.toString().toUpperCase();
+    return normalizedStatus !== 'REVIEWED' && normalizedStatus !== 'REJECTED';
+  };
+
   const handleApprove = async (id) => {
     try {
       await axiosInstance.patch(`/Product/${id}/approve`);
       alert("تمت الموافقة على المنتج وسيظهر للعملاء.");
-      fetchAdminProducts();
+      fetchAdminProducts(); // refresh
     } catch (error) {
-      alert("حدث خطأ أثناء الموافقة.");
+      console.error("Approve error:", error.response?.data);
+      alert(error.response?.data?.message || "حدث خطأ أثناء الموافقة.");
     }
   };
 
@@ -41,7 +65,8 @@ const AdminProducts = () => {
         alert("تم رفض المنتج.");
         fetchAdminProducts();
       } catch (error) {
-        alert("حدث خطأ أثناء الرفض.");
+        console.error("Reject error:", error.response?.data);
+        alert(error.response?.data?.message || "حدث خطأ أثناء الرفض.");
       }
     }
   };
@@ -68,35 +93,56 @@ const AdminProducts = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {products.length > 0 ? products.map((product) => (
-                <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center p-1 shrink-0">
-                        <img src={getImageUrl(product.imgUrl, 'Products')} alt={product.name} />
+              {products.length > 0 ? products.map((product) => {
+                const statusInfo = getStatusInfo(product.status);
+                const pending = isPending(product.status);
+                return (
+                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="p-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center p-1 shrink-0">
+                          <img 
+                            src={getImageUrl(product.imgUrl, 'Products')} 
+                            alt={product.name} 
+                            className="max-h-full mix-blend-multiply object-contain"
+                            onError={(e) => e.target.src = "https://placehold.co/100x100?text=No+Image"}
+                          />
+                        </div>
+                        <p className="font-bold text-gray-800">{product.name}</p>
                       </div>
-                      <p className="font-bold text-gray-800">{product.name}</p>
-                    </div>
-                  </td>
-                  <td className="p-4 text-gray-600">{product.storeName || 'غير معروف'}</td>
-                  <td className="p-4 font-bold text-gray-800">{product.price} ج.م</td>
-                  <td className="p-4 text-center">
-                    {product.status === 'PENDING' && <span className="bg-amber-100 text-amber-600 text-xs px-3 py-1 rounded-full font-bold">قيد المراجعة</span>}
-                    {product.status === 'REVIEWED' && <span className="bg-emerald-100 text-emerald-600 text-xs px-3 py-1 rounded-full font-bold">مقبول</span>}
-                    {product.status === 'REJECTED' && <span className="bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full font-bold">مرفوض</span>}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-center gap-2">
-                      {product.status === 'PENDING' && (
-                        <>
-                          <button onClick={() => handleApprove(product.id)} className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg" title="موافقة"><Check size={18} /></button>
-                          <button onClick={() => handleReject(product.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg" title="رفض"><X size={18} /></button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              )) : (
+                    </td>
+                    <td className="p-4 text-gray-600">{product.storeName || 'غير معروف'}</td>
+                    <td className="p-4 font-bold text-gray-800">{product.price} ج.م</td>
+                    <td className="p-4 text-center">
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusInfo.color}`}>
+                        {statusInfo.text}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-center gap-2">
+                        {pending && (
+                          <>
+                            <button 
+                              onClick={() => handleApprove(product.id)} 
+                              className="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors" 
+                              title="موافقة"
+                            >
+                              <Check size={18} />
+                            </button>
+                            <button 
+                              onClick={() => handleReject(product.id)} 
+                              className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" 
+                              title="رفض"
+                            >
+                              <X size={18} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }) : (
                 <tr><td colSpan="5" className="p-8 text-center text-gray-500">لا توجد منتجات للعرض</td></tr>
               )}
             </tbody>

@@ -36,6 +36,7 @@ const Login = () => {
       const userData = userResponse.data.data;
       console.log("User roles:", userData.roles);
       // 4. إرسال البيانات للـ Redux (بدلاً من البيانات الوهمية القديمة)
+      console.log("Dispatched user:", userData);
       dispatch(login(userData));
 
       // 5. توجيه المستخدم حسب دوره (Role)
