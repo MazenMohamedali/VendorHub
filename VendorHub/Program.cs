@@ -1,9 +1,7 @@
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using System.Text;
 using VendorHub.Filters;
 using VendorHub.GraphQL;
@@ -71,7 +69,7 @@ namespace VendorHub
 
                 if (builder.Environment.IsDevelopment())
                     options.EnableDetailedErrors();
-                else options.EnableSensitiveDataLogging = false;
+                //else options.EnableSensitiveDataLogging = false;
             });
 
 
@@ -154,7 +152,7 @@ namespace VendorHub
    
             var app = builder.Build();
 
-            app.MapHealthChecks("/health");
+            //app.MapHealthChecks("/health");
             app.MapHub<NotificationHub>("/notificationHub");
             app.UseWebSockets();
 

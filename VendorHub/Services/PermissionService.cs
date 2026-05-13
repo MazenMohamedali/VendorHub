@@ -30,11 +30,20 @@ namespace VendorHub.Services
                 .GetAll()
                 .Where(p => p.IsActive)
                 .OrderBy(p => p.Category)
-                .ThenBy(p => p.Name)
-                .Select(PermissionToDto())
+                .ThenBy(p => p.Type)
+                .Select(p => new { p.Id, p.Type, p.Description, p.Category, p.IsActive })
                 .ToListAsync();
 
-            return new GeneralResponse<IEnumerable<PermissionDto>>().Succeeded(permissions);
+            var dtos = permissions.Select(p => new PermissionDto
+            {
+                Id = p.Id,
+                Name = p.Type.ToString(),
+                Description = p.Description,
+                Category = p.Category,
+                IsActive = p.IsActive
+            });
+
+            return new GeneralResponse<IEnumerable<PermissionDto>>().Succeeded(dtos);
         }
 
         public async Task<GeneralResponse<IEnumerable<VendorPermissionDto>>> GetVendorPermissionsAsync(int vendorId)
@@ -47,14 +56,31 @@ namespace VendorHub.Services
 
             var permissions = await _vendorPermissionRepository
                  .GetAll()
-                .Where(vp => vp.VendorId == vendorId)
-                .Include(vp => vp.Permission)
-                .OrderBy(vp => vp.Permission.Category)
-                .ThenBy(vp => vp.Permission.Name)
-                .Select(VendorPermissionToDto())
-                .ToListAsync();
+                 .Where(vp => vp.VendorId == vendorId)
+                 .Include(vp => vp.Permission)
+                 .OrderBy(vp => vp.Permission.Category)
+                 .ThenBy(vp => vp.Permission.Type)
+                 .Select(vp => new {
+                     vp.Id,
+                     vp.VendorId,
+                     vp.PermissionId,
+                     vp.Permission.Type,
+                     vp.Permission.Description,
+                     vp.IsEnabled
+                 })
+                 .ToListAsync();
 
-            return new GeneralResponse<IEnumerable<VendorPermissionDto>>().Succeeded(permissions);
+            var dtos = permissions.Select(p => new VendorPermissionDto
+            {
+                Id = p.Id,
+                VendorId = p.VendorId,
+                PermissionId = p.PermissionId,
+                PermissionName = p.Type.ToString(),
+                PermissionDescription = p.Description,
+                IsEnabled = p.IsEnabled
+            });
+
+            return new GeneralResponse<IEnumerable<VendorPermissionDto>>().Succeeded(dtos);
         }
         #endregion
 

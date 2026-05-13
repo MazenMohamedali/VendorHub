@@ -99,8 +99,14 @@ namespace VendorHub.Services
             if (productFromRequest.ImageFile != null)
                 await AddImageToProduct(productFromRequest.ImageFile, product);
 
-            var result = ProductToVendorDetailsDto().Compile()(product);
-            return new GeneralResponse<ProductDetailsWithStatusDto>().Succeeded(result, "Product created and pending admin approval");
+            var fullProduct = await _productRepository.GetAll()
+                .Include(p => p.Vendor)
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == product.Id);
+
+            var result = ProductToVendorDetailsDto().Compile()(fullProduct!);
+            return new GeneralResponse<ProductDetailsWithStatusDto>()
+                .Succeeded(result, "Product created and pending admin approval");
         }
 
         public async Task<GeneralResponse<ProductDetailsWithStatusDto>> UpdateAsync(EditProductDto productFromRequest, int productId)

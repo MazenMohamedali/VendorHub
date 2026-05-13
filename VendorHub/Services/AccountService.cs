@@ -178,6 +178,7 @@ namespace VendorHub.Services
         {
             var vendor = new Vendor { StoreName = dto.StoreName };
             RegisterUserDtoToUser(vendor, dto);
+            vendor.AccountStatus = AccountStatus.PENDING; 
 
             var result = await CreateAndAssignRole(vendor, "Vendor", dto.Password);
             return HandleIdentityResult(result, "Vendor registered successfully");
