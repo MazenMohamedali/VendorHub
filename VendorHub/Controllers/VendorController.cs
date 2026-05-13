@@ -10,9 +10,9 @@ namespace VendorHub.Controllers
     [ApiController]
     public class VendorController : ControllerBase
     {
-        private readonly VendorService _vendorService;
+        private readonly IVendorService _vendorService;
 
-        public VendorController(VendorService vendorService)
+        public VendorController(IVendorService vendorService)
         {
             _vendorService = vendorService;
         }

@@ -101,6 +101,7 @@ namespace VendorHub
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IStatisticsService, StatisticsService>();
             builder.Services.AddScoped<IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IVendorService, VendorService>();
 
 
             builder.Services
@@ -157,21 +158,21 @@ namespace VendorHub
             app.UseWebSockets();
 
             // middleWare
-            if (app.Environment.IsDevelopment())
-            {
-                app.Use(async (context, next) =>
-                {
-                    if (context.Request.Path == "/")
-                    {
-                        context.Response.Redirect("/swagger");
-                        return;
-                    }
-                    await next();
-                });
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.Use(async (context, next) =>
+            //    {
+            //        if (context.Request.Path == "/")
+            //        {
+            //            context.Response.Redirect("/swagger");
+            //            return;
+            //        }
+            //        await next();
+            //    });
 
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
 
             app.UseStaticFiles();
 

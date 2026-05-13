@@ -6,7 +6,7 @@ using VendorHub.Repository;
 
 namespace VendorHub.Services
 {
-    public class VendorService
+    public class VendorService : IVendorService
     {
         private readonly IGeneralRepository<Vendor> _vendorRepository;
 

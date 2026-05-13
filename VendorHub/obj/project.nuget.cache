@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "h2Ct6SSMHW0=",
+  "dgSpecHash": "rGDPHIKz9ek=",
   "success": true,
-  "projectFilePath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+  "projectFilePath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\FABRIKA\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\FABRIKA\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
@@ -130,9 +130,9 @@
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference Microsoft.Extensions.Caching.Memory will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "projectPath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "filePath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
       "libraryId": "Microsoft.Extensions.Caching.Memory",
       "targetGraphs": [
         "net10.0"
@@ -142,9 +142,9 @@
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference System.Text.Json will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "projectPath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
       "warningLevel": 1,
-      "filePath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+      "filePath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
       "libraryId": "System.Text.Json",
       "targetGraphs": [
         "net10.0"

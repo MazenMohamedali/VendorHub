@@ -1,1 +1,5 @@
-wwwroot\Images\Products\1.jpg
+wwwroot\.gitkeep
+wwwroot\Images\Categories\.gitkeep
+wwwroot\Images\Products\.gitkeep
+wwwroot\Images\Categories\2.png
+wwwroot\Images\Products\4.png

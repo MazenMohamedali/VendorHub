@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using VendorHub.DTOs.CategoryDto;
 using VendorHub.DTOs.sharedDto;
+using VendorHub.Helpers;
 using VendorHub.Models;
 using VendorHub.Repository;
 
@@ -151,11 +152,12 @@ namespace VendorHub.Services
         #region Private Helpers
         private Expression<Func<Category, CategoryDetailsDto>> CategoryToDetailsDto()
         {
+            string baseUrl = ProductHelper.BaseImageUrl?.Replace("/Images/Products", "/Images/Categories") ?? "";
             return c => new CategoryDetailsDto
             {
                 Id = c.Id,
                 Name = c.Name,
-                ImageUrl = c.ImageUrl,
+                ImageUrl = string.IsNullOrEmpty(c.ImageUrl) ? null : $"{baseUrl}/{c.ImageUrl}",
                 IsActive = c.IsActive,
                 CreatedAt = c.CreatedAt,
                 UpdatedAt = c.UpdatedAt,

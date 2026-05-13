@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj": {}
+    "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj": {}
   },
   "projects": {
-    "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj": {
+    "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+        "projectUniqueName": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
         "projectName": "VendorHub",
-        "projectPath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
+        "projectPath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\VendorHub.csproj",
         "packagesPath": "C:\\Users\\FABRIKA\\.nuget\\packages\\",
-        "outputPath": "D:\\AC#2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\obj\\",
+        "outputPath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
