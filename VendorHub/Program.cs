@@ -103,59 +103,106 @@ namespace VendorHub
             builder.Services.AddScoped<IPermissionService, PermissionService>();
             builder.Services.AddScoped<IVendorService, VendorService>();
 
-
             builder.Services
-             .AddAuthentication(options =>
-             {
-                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-             })
-             .AddJwtBearer(options => 
-             {
-                 options.SaveToken = true;
-                 options.RequireHttpsMetadata = false;
-                 options.TokenValidationParameters = new TokenValidationParameters()
-                 {
-                     ValidateIssuer = true,
-                     ValidIssuer = builder.Configuration["JWT:IssuerIP"],
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["JWT:IssuerIP"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["JWT:AudienceIP"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecritKey"] ?? "")),
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
 
-                     ValidateAudience = true,
-                     ValidAudience = builder.Configuration["JWT:AudienceIP"],
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"]; // SignalR ???? ?????? ???
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecritKey"] ?? "")),
 
-                     ValidateLifetime = true,
-                     ClockSkew = TimeSpan.Zero
-                 };
-             });
+            //builder.Services
+            // .AddAuthentication(options =>
+            // {
+            //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            // })
+            // .AddJwtBearer(options => 
+            // {
+            //     options.SaveToken = true;
+            //     options.RequireHttpsMetadata = false;
+            //     options.TokenValidationParameters = new TokenValidationParameters()
+            //     {
+            //         ValidateIssuer = true,
+            //         ValidIssuer = builder.Configuration["JWT:IssuerIP"],
 
+            //         ValidateAudience = true,
+            //         ValidAudience = builder.Configuration["JWT:AudienceIP"],
+
+            //         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecritKey"] ?? "")),
+
+            //         ValidateLifetime = true,
+            //         ClockSkew = TimeSpan.Zero
+            //     };
+            // });
+
+
+            //    builder.Services.AddCors(options =>
+            //    {
+            //        options.AddPolicy("MyPolicy", policy =>
+            //        {
+            //            policy
+            //            .AllowAnyOrigin()
+            //            .AllowAnyMethod()
+            //            .AllowAnyHeader();
+            //        });
+
+            //    //    options.AddPolicy("RestrictedPolicy", policy =>
+            //    //    {
+            //    //        policy
+            //    //            .WithOrigins("https://yourdomain.com")
+            //    //            .WithMethods("GET", "POST", "PUT", "DELETE")
+            //    //            .WithHeaders("Content-Type", "Authorization");
+            //    //    });
+            //    //});
+            //});
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("MyPolicy", policy =>
                 {
-                    policy
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    policy.WithOrigins("http://localhost:5173")  // Your Vite dev server
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();                   // Required for SignalR
                 });
+            });
 
-            //    options.AddPolicy("RestrictedPolicy", policy =>
-            //    {
-            //        policy
-            //            .WithOrigins("https://yourdomain.com")
-            //            .WithMethods("GET", "POST", "PUT", "DELETE")
-            //            .WithHeaders("Content-Type", "Authorization");
-            //    });
-            //});
-        });
-   
             var app = builder.Build();
 
             //app.MapHealthChecks("/health");
-            app.MapHub<NotificationHub>("/notificationHub");
             app.UseWebSockets();
+            app.MapHub<NotificationHub>("/notificationHub");
 
             // middleWare
             if (app.Environment.IsDevelopment())
@@ -201,7 +248,20 @@ namespace VendorHub
                 );
             }
 
-            
+            using (var scope = app.Services.CreateScope())
+            {
+                var permissionService = scope.ServiceProvider.GetRequiredService<IPermissionService>();
+                var vendorService = scope.ServiceProvider.GetRequiredService<IVendorService>();
+                var vendors = await vendorService.GetAllVendorsAsync();
+                foreach (var vendor in vendors.Data)
+                {
+                    await permissionService.EnablePermissionForVendorAsync(vendor.Id, PermissionType.CanViewProducts);
+                    await permissionService.EnablePermissionForVendorAsync(vendor.Id, PermissionType.CanViewOrders);
+                    await permissionService.EnablePermissionForVendorAsync(vendor.Id, PermissionType.CanUpdateOrderStatus);
+                    // Add others as needed
+                }
+            }
+
             app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();

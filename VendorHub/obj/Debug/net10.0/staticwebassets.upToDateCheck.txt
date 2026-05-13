@@ -7,3 +7,4 @@ wwwroot\Images\Products\5.png
 wwwroot\Images\Products\6.png
 wwwroot\Images\Categories\3.png
 wwwroot\Images\Products\7.png
+wwwroot\Images\Products\8.png

@@ -64,31 +64,32 @@ const AdminVendors = () => {
       setIsPermissionLoading(false);
     }
   };
+    const togglePermission = async (permissionType, isCurrentlyEnabled) => {
+      try {
+        const endpoint = isCurrentlyEnabled ? 'disable' : 'enable';
+        await axiosInstance.post(`/Permission/vendor/${selectedVendor.id}/${endpoint}/${permissionType}`, {});
 
-  const togglePermission = async (permissionType, isCurrentlyEnabled) => {
-    try {
-      const endpoint = isCurrentlyEnabled ? 'disable' : 'enable';
-      await axiosInstance.post(`/Permission/vendor/${selectedVendor.id}/${endpoint}/${permissionType}`, {});
-
-      // تحديث حالة الزر محلياً بناءً على هيكل البيانات الجديد
-      if (isCurrentlyEnabled) {
-        setVendorPermissions(prev => prev.map(p =>
-          p.permissionName === permissionType ? { ...p, isEnabled: false } : p
-        ));
-      } else {
-        const exists = vendorPermissions.some(p => p.permissionName === permissionType);
-        if (exists) {
+        // Update local state
+        if (isCurrentlyEnabled) {
           setVendorPermissions(prev => prev.map(p =>
-            p.permissionName === permissionType ? { ...p, isEnabled: true } : p
+            p.permissionName === permissionType ? { ...p, isEnabled: false } : p
           ));
         } else {
-          setVendorPermissions(prev => [...prev, { permissionName: permissionType, isEnabled: true }]);
+          const exists = vendorPermissions.some(p => p.permissionName === permissionType);
+          if (exists) {
+            setVendorPermissions(prev => prev.map(p =>
+              p.permissionName === permissionType ? { ...p, isEnabled: true } : p
+            ));
+          } else {
+            setVendorPermissions(prev => [...prev, { permissionName: permissionType, isEnabled: true }]);
+          }
         }
+      } catch (error) {
+        console.error("Toggle permission error:", error);
+        const errorMsg = error.response?.data?.message || error.response?.data?.errors?.[0] || "حدث خطأ أثناء تحديث الصلاحية.";
+        alert(errorMsg);
       }
-    } catch (error) {
-      alert("حدث خطأ أثناء تحديث الصلاحية.");
-    }
-  };
+    };
 
   const handleApprove = async (id) => {
     try {

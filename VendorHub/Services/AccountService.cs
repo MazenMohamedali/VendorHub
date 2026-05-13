@@ -22,6 +22,7 @@ namespace VendorHub.Services
         private readonly IGeneralRepository<Customer> _customerRepository;
         private readonly IGeneralRepository<Vendor> _vendorRepository;
         private readonly IGeneralRepository<User> _userRepository;
+        private readonly IPermissionService _permissionService;
 
         public AccountService(
             UserManager<User> userManager,
@@ -30,7 +31,8 @@ namespace VendorHub.Services
             IOptions<JwtOptions> options,
             IGeneralRepository<Customer> customerRepository,
             IGeneralRepository<Vendor> vendorRepository,
-            IGeneralRepository<User> userRepository)
+            IGeneralRepository<User> userRepository,
+            IPermissionService permissionService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -39,6 +41,7 @@ namespace VendorHub.Services
             _customerRepository = customerRepository;
             _vendorRepository = vendorRepository;
             _userRepository = userRepository;
+            _permissionService = permissionService;
         }
 
 
@@ -351,12 +354,21 @@ namespace VendorHub.Services
         public async Task<GeneralResponse> ApproveVendorAsync(int vendorId)
         {
             var user = await _userManager.FindByIdAsync(vendorId.ToString());
-
             if (user == null || user is not Vendor)
                 return new GeneralResponse().Failed("Vendor not found");
 
             user.AccountStatus = AccountStatus.ACTIVE;
             var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                // Grant default permissions
+                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanViewProducts);
+                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanViewOrders);
+                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanUpdateOrderStatus);
+                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanUploadProducts);
+                // Add more as needed
+            }
 
             return HandleIdentityResult(result, "Vendor approved successfully");
         }

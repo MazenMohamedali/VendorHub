@@ -3,44 +3,8 @@
   "WorkspaceRootPath": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\hubs\\notificationhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\models\\vendorhubdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\models\\vendorhubdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\services\\permissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\services\\permissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\dtos\\permissiondto\\createpermissiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\dtos\\permissiondto\\createpermissiondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\controllers\\permissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\controllers\\permissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\helpers\\producthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\helpers\\producthelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\services\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\services\\categoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\controllers\\vendorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\controllers\\vendorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|solutionrelative:vendorhub\\services\\accountservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DD0D0538-8094-83F4-594E-F28DC6DF1641}|VendorHub\\VendorHub.csproj|d:\\accs2\\iaproject\\vendorhubapicloning\\vendorhub\\vendorhub\\services\\productservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,141 +26,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "PermissionController.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Controllers\\PermissionController.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Controllers\\PermissionController.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Controllers\\PermissionController.cs",
-              "RelativeToolTip": "VendorHub\\Controllers\\PermissionController.cs",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAAABwAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T22:31:41.908Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PermissionService.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\PermissionService.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Services\\PermissionService.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\PermissionService.cs",
-              "RelativeToolTip": "VendorHub\\Services\\PermissionService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T22:33:45.152Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "VendorHubDbContext.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Models\\VendorHubDbContext.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Models\\VendorHubDbContext.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Models\\VendorHubDbContext.cs",
-              "RelativeToolTip": "VendorHub\\Models\\VendorHubDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T22:34:03.265Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "VendorController.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Controllers\\VendorController.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Controllers\\VendorController.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Controllers\\VendorController.cs",
-              "RelativeToolTip": "VendorHub\\Controllers\\VendorController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T02:55:14.08Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "NotificationHub.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Hubs\\NotificationHub.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Hubs\\NotificationHub.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Hubs\\NotificationHub.cs",
-              "RelativeToolTip": "VendorHub\\Hubs\\NotificationHub.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABCAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T08:13:39.438Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "CategoryService.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\CategoryService.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Services\\CategoryService.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\CategoryService.cs",
-              "RelativeToolTip": "VendorHub\\Services\\CategoryService.cs",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAwwKQAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T04:16:58.101Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ProductHelper.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Helpers\\ProductHelper.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Helpers\\ProductHelper.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Helpers\\ProductHelper.cs",
-              "RelativeToolTip": "VendorHub\\Helpers\\ProductHelper.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T03:34:46.583Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "AccountService.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\AccountService.cs",
-              "RelativeDocumentMoniker": "VendorHub\\Services\\AccountService.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\AccountService.cs",
-              "RelativeToolTip": "VendorHub\\Services\\AccountService.cs",
-              "ViewState": "AgIAAJ8AAAAAAAAAAAAwwL8AAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T02:52:56.31Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Program.cs",
               "RelativeDocumentMoniker": "VendorHub\\Program.cs",
               "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Program.cs",
               "RelativeToolTip": "VendorHub\\Program.cs",
-              "ViewState": "AgIAAJIAAAAAAAAAAAAAAKYAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAMEAAAAAAAAAAAAkwMwAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T02:46:10.64Z",
+              "WhenOpened": "2026-05-13T10:39:05.354Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 1,
               "Title": "ProductService.cs",
               "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\ProductService.cs",
               "RelativeDocumentMoniker": "VendorHub\\Services\\ProductService.cs",
               "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\Services\\ProductService.cs",
               "RelativeToolTip": "VendorHub\\Services\\ProductService.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAEUBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T23:36:27.681Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "CreatePermissionDto.cs",
-              "DocumentMoniker": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\DTOs\\PermissionDto\\CreatePermissionDto.cs",
-              "RelativeDocumentMoniker": "VendorHub\\DTOs\\PermissionDto\\CreatePermissionDto.cs",
-              "ToolTip": "D:\\ACCS2\\IAProject\\vendorHubApiCloning\\VendorHub\\VendorHub\\DTOs\\PermissionDto\\CreatePermissionDto.cs",
-              "RelativeToolTip": "VendorHub\\DTOs\\PermissionDto\\CreatePermissionDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T22:57:02.375Z"
+              "WhenOpened": "2026-05-12T23:36:27.681Z",
+              "EditorCaption": ""
             }
           ]
         }

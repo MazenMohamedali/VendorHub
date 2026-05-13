@@ -19,41 +19,37 @@ const VendorDashboard = () => {
       try {
         setIsLoading(true);
         
-        // 1. جلب المنتجات لحساب العدد الإجمالي
-        const productsRes = await axiosInstance.get('/Product/my-products');
-        // تأمين صارم للتأكد من أنها مصفوفة
-        const products = Array.isArray(productsRes.data?.data) ? productsRes.data.data : [];
-
-        // 2. جلب الطلبات لحساب الإحصائيات والإيرادات
+        // 1. جلب الطلبات (بناءً على الـ JSON الخاص بك)
         const ordersRes = await axiosInstance.get('/Order/vendor-orders');
-        // تأمين صارم للتأكد من أنها مصفوفة لمنع خطأ filter is not a function
-        const orders = Array.isArray(ordersRes.data?.data) ? ordersRes.data.data : [];
+        // الوصول للمصفوفة: res.data (Axios) -> .data (الخاصة بالباك إند) -> .items (الخاصة بالـ Paging)
+        const orders = ordersRes.data?.data?.items || [];
+
+        // 2. جلب المنتجات
+        const productsRes = await axiosInstance.get('/Product/my-products');
+        const products = productsRes.data?.data?.items || (Array.isArray(productsRes.data?.data) ? productsRes.data.data : []);
 
         // 3. حساب الإحصائيات ديناميكياً
+        // ملاحظة: totalPrice و orderId و orderDate هي المسميات في الـ API الخاص بك
         const pending = orders.filter(o => o.status === 'Pending').length;
         
-        // حساب الإيرادات (للطلبات المكتملة أو المشحونة فقط)
+        // حساب الإيرادات (للطلبات المكتملة فقط)
         const revenue = orders
           .filter(o => o.status === 'Delivered' || o.status === 'Shipped')
-          .reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
+          .reduce((acc, curr) => acc + (curr.totalPrice || 0), 0);
 
         setStats({
           totalProducts: products.length,
-          totalOrders: orders.length,
+          totalOrders: ordersRes.data?.data?.totalCount || orders.length,
           pendingOrders: pending,
           totalRevenue: revenue
         });
 
-        // 4. أخذ أحدث 5 طلبات فقط للعرض السريع في الجدول
+        // 4. أخذ أحدث 5 طلبات
         setRecentOrders(orders.slice(0, 5));
 
-      }catch (error) {
-      console.error("Error fetching dashboard data:", error);
-      if (error.response) {
-        console.error("Response status:", error.response.status);
-        console.error("Response data:", error.response.data);
-      } 
-      }finally {
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -69,12 +65,11 @@ const VendorDashboard = () => {
     );
   }
 
-  // مصفوفة كروت الإحصائيات لتسهيل العرض
   const statCards = [
     { title: 'إجمالي المنتجات', value: stats.totalProducts, icon: <Package size={24} />, color: 'bg-blue-50 text-blue-600' },
     { title: 'إجمالي الطلبات', value: stats.totalOrders, icon: <ShoppingBag size={24} />, color: 'bg-purple-50 text-purple-600' },
     { title: 'طلبات قيد الانتظار', value: stats.pendingOrders, icon: <Clock size={24} />, color: 'bg-amber-50 text-amber-600' },
-    { title: 'إجمالي الإيرادات', value: `${stats.totalRevenue} ج.م`, icon: <DollarSign size={24} />, color: 'bg-emerald-50 text-emerald-600' },
+    { title: 'إجمالي الإيرادات', value: `${stats.totalRevenue.toLocaleString()} ج.م`, icon: <DollarSign size={24} />, color: 'bg-emerald-50 text-emerald-600' },
   ];
 
   return (
@@ -119,19 +114,25 @@ const VendorDashboard = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {recentOrders.length > 0 ? recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="p-4 font-bold text-gray-800">#{order.id}</td>
-                  <td className="p-4 text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString('ar-EG')}</td>
-                  <td className="p-4 font-bold text-dokany">{order.totalAmount} ج.م</td>
+                <tr key={order.orderId} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="p-4 font-bold text-gray-800">#{order.orderId}</td>
+                  <td className="p-4 text-sm text-gray-500">
+                    {order.orderDate ? new Date(order.orderDate).toLocaleDateString('ar-EG') : '---'}
+                  </td>
+                  <td className="p-4 font-bold text-dokany">{order.totalPrice} ج.م</td>
                   <td className="p-4">
-                    <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-bold">
-                      {order.status}
+                    <span className={`text-xs px-3 py-1 rounded-full font-bold ${
+                      order.status === 'Pending' ? 'bg-amber-50 text-amber-600' : 'bg-gray-100 text-gray-700'
+                    }`}>
+                      {order.status === 'Pending' ? 'قيد الانتظار' : order.status}
                     </span>
                   </td>
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="4" className="p-8 text-center text-gray-500">لا توجد طلبات حديثة.</td>
+                  <td colSpan="4" className="p-12 text-center text-gray-400">
+                    لا توجد طلبات حالياً
+                  </td>
                 </tr>
               )}
             </tbody>
