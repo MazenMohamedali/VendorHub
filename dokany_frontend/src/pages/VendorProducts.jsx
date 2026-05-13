@@ -19,7 +19,8 @@ const VendorProducts = () => {
     categoryId: '', // سيتم تخزين الـ ID هنا عند اختيار الاسم
     productionDate: '', 
     expireDate: '',     
-    imageFile: null
+    imageFile: null,
+    imagePreview: null // لتخزين معاينة الصورة
   });
 
   // دالة استخراج الـ ID من التوكن
@@ -36,12 +37,10 @@ const VendorProducts = () => {
   };
 
   // دالة جلب البيانات (المنتجات + الأقسام)
-  // دالة جلب البيانات (المنتجات + الأقسام)
   const fetchData = async () => {
     try {
       setIsLoading(true);
       
-      // التعديل هنا: استخدام المسار الصحيح لجلب منتجات البائع
       const productsRes = await axiosInstance.get('/Product/my-products');
       setProducts(Array.isArray(productsRes.data?.data) ? productsRes.data.data : []);
 
@@ -62,7 +61,16 @@ const VendorProducts = () => {
   }, []);
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, imageFile: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      // إنشاء معاينة الصورة باستخدام URL.createObjectURL
+      const previewUrl = URL.createObjectURL(file);
+      setFormData({ 
+        ...formData, 
+        imageFile: file,
+        imagePreview: previewUrl
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -89,7 +97,10 @@ const VendorProducts = () => {
       data.append('Quantity', formData.quantity);
       data.append('CategoryId', formData.categoryId);
       data.append('VendorId', vendorId);
-      data.append('ImageFile', formData.imageFile);
+      
+      if (formData.imageFile) {
+        data.append('ImageFile', formData.imageFile);
+      }
       
       if (formData.productionDate) data.append('ProductionDate', formData.productionDate);
       if (formData.expireDate) data.append('ExpireDate', formData.expireDate);
@@ -99,7 +110,16 @@ const VendorProducts = () => {
       alert("تم إضافة المنتج بنجاح!");
       setIsModalOpen(false);
       fetchData(); 
-      setFormData({ name: '', price: '', quantity: '', categoryId: '', productionDate: '', expireDate: '', imageFile: null });
+      setFormData({ 
+        name: '', 
+        price: '', 
+        quantity: '', 
+        categoryId: '', 
+        productionDate: '', 
+        expireDate: '', 
+        imageFile: null,
+        imagePreview: null
+      });
       
     } catch (error) {
       const backendError = error.response?.data;
@@ -109,6 +129,37 @@ const VendorProducts = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // ✅ Helper function to construct proper image URLs
+  const getProductImageUrl = (imgUrl) => {
+    if (!imgUrl) return 'https://placehold.co/400x400?text=No+Image';
+    if (imgUrl.startsWith('http://') || imgUrl.startsWith('https://')) return imgUrl;
+    
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    if (imgUrl.startsWith('/Images/')) {
+      return `${baseUrl}${imgUrl}`;
+    }
+    return `${baseUrl}/Images/Products/${imgUrl}`;
+  };
+
+  // ✅ FIXED: Added the function declaration here
+  const handleCloseModal = () => {
+    // تنظيف المعاينة عند إغلاق المودال
+    if (formData.imagePreview) {
+      URL.revokeObjectURL(formData.imagePreview);
+    }
+    setIsModalOpen(false);
+    setFormData({ 
+      name: '', 
+      price: '', 
+      quantity: '', 
+      categoryId: '', 
+      productionDate: '', 
+      expireDate: '', 
+      imageFile: null,
+      imagePreview: null
+    });
   };
 
   return (
@@ -131,12 +182,12 @@ const VendorProducts = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <div key={product.id} className="bg-white rounded-3xl p-4 border border-gray-100 shadow-sm hover:shadow-md transition-all">
-            <img 
-              src={product.imgUrl ? `http://localhost:44342${product.imgUrl}` : 
-                  product.imageUrl ? `http://localhost:44342${product.imageUrl}` :
-                  'https://placehold.co/400x400?text=No+Image'} 
-              alt={product.name} 
-            />
+              <img 
+                src={getProductImageUrl(product.imgUrl)}
+                alt={product.name}
+                className="w-full h-48 object-cover rounded-2xl mb-4 bg-gray-50"
+                onError={(e) => { e.target.src = 'https://placehold.co/400x400?text=No+Image'; }}
+              />
               <h3 className="font-bold text-gray-800 mb-1">{product.name}</h3>
               <p className="text-dokany font-black mb-4">{product.price} ج.م</p>
               <div className="flex gap-2">
@@ -157,23 +208,36 @@ const VendorProducts = () => {
               
               <div>
                 <label className="block text-sm font-bold mb-2">اسم المنتج</label>
-                <input required type="text" className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
+                <input 
+                  required 
+                  type="text" 
+                  className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})} />
+                  onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-2">السعر</label>
-                  <input required type="number" step="0.01" className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
+                  <input 
+                    required 
+                    type="number" 
+                    step="0.01" 
+                    className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
                     value={formData.price}
-                    onChange={(e) => setFormData({...formData, price: e.target.value})} />
+                    onChange={(e) => setFormData({...formData, price: e.target.value})} 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-2">الكمية</label>
-                  <input required type="number" className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
+                  <input 
+                    required 
+                    type="number" 
+                    className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany" 
                     value={formData.quantity}
-                    onChange={(e) => setFormData({...formData, quantity: e.target.value})} />
+                    onChange={(e) => setFormData({...formData, quantity: e.target.value})} 
+                  />
                 </div>
               </div>
 
@@ -197,38 +261,68 @@ const VendorProducts = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold mb-2 text-gray-600 text-xs">تاريخ الإنتاج (اختياري)</label>
-                  <input type="date" className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany text-sm" 
+                  <input 
+                    type="date" 
+                    className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany text-sm" 
                     value={formData.productionDate}
-                    onChange={(e) => setFormData({...formData, productionDate: e.target.value})} />
+                    onChange={(e) => setFormData({...formData, productionDate: e.target.value})} 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold mb-2 text-gray-600 text-xs">تاريخ الانتهاء (اختياري)</label>
-                  <input type="date" className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany text-sm" 
+                  <input 
+                    type="date" 
+                    className="w-full p-4 bg-gray-50 rounded-2xl border-none focus:ring-2 focus:ring-dokany text-sm" 
                     value={formData.expireDate}
-                    onChange={(e) => setFormData({...formData, expireDate: e.target.value})} />
+                    onChange={(e) => setFormData({...formData, expireDate: e.target.value})} 
+                  />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-bold mb-2">صورة المنتج</label>
-                <div className="relative h-32 w-full bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden">
-                  {formData.imageFile ? (
-                    <img src={getImageUrl(product.imgUrl, 'Products')} alt={product.name} />
+                <div className="relative h-32 w-full bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden cursor-pointer hover:border-dokany transition-colors">
+                  {formData.imagePreview ? (
+                    <img 
+                      src={formData.imagePreview}
+                      alt="معاينة المنتج"
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="text-center text-gray-400">
-                      <ImagePlus className="mx-auto mb-1" />
-                      <span className="text-xs">اضغط لرفع صورة</span>
+                      <ImagePlus className="mx-auto mb-1" size={32} />
+                      <span className="text-xs">اضغط أو اسحب صورة هنا</span>
                     </div>
                   )}
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange} 
+                    className="absolute inset-0 opacity-0 cursor-pointer" 
+                  />
                 </div>
+                {formData.imageFile && (
+                  <p className="text-xs text-emerald-600 mt-2 font-medium">
+                    ✓ تم اختيار الصورة: {formData.imageFile.name}
+                  </p>
+                )}
               </div>
 
               <div className="flex gap-4 mt-8 pt-4">
-                <button type="submit" disabled={isSaving} className="flex-1 bg-dokany text-white py-4 rounded-2xl font-bold hover:bg-black transition-all disabled:bg-gray-400 flex justify-center items-center gap-2">
+                <button 
+                  type="submit" 
+                  disabled={isSaving} 
+                  className="flex-1 bg-dokany text-white py-4 rounded-2xl font-bold hover:bg-black transition-all disabled:bg-gray-400 flex justify-center items-center gap-2"
+                >
                   {isSaving ? <Loader2 className="animate-spin" size={20}/> : "حفظ المنتج"}
                 </button>
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all">إلغاء</button>
+                <button 
+                  type="button" 
+                  onClick={handleCloseModal} 
+                  className="flex-1 bg-gray-100 text-gray-600 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all"
+                >
+                  إلغاء
+                </button>
               </div>
             </form>
           </div>

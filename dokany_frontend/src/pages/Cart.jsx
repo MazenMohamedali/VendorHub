@@ -110,7 +110,7 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div key={item.id} className="p-6 flex flex-col sm:flex-row items-center gap-6">
                 <div className="w-24 h-24 bg-gray-50 rounded-xl flex items-center justify-center p-2 shrink-0 border border-gray-100">
-                <img src={getImageUrl(product.imgUrl, 'Products')} alt={product.name} />
+                  <img src={item.images?.[0] || getImageUrl(item.imgUrl, 'Products') || 'https://placehold.co/100x100?text=No+Image'} alt={item.title} />
                 </div>
                 <div className="flex-1 text-center sm:text-right">
                   <Link to={`/product/${item.id}`} className="font-bold text-gray-800 hover:text-dokany transition-colors line-clamp-1 mb-1">{item.title}</Link>

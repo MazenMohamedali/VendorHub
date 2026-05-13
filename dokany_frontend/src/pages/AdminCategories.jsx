@@ -180,7 +180,7 @@ const AdminCategories = () => {
                         <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center p-1 shrink-0">
                         {/* عرض الصورة بالمسار الجديد بناءً على تقرير الباك إند [cite: 43] */}
                         <img 
-                          src={category.imageUrl ? `http://localhost:44342/Images/Categories/${category.imageUrl}` : "https://placehold.co/100x100?text=No+Image"}
+                          src={getImageUrl(category.imageUrl, 'Categories')} 
                           alt={category.name} 
                           className="max-h-full mix-blend-multiply object-contain rounded" 
                           onError={(e) => e.target.src = "https://placehold.co/100x100?text=Error"} 
@@ -256,8 +256,8 @@ const AdminCategories = () => {
                   }`}
                 >
                   {formData.imagePreview ? (
-                    <img src={getImageUrl(category.imageUrl, 'Categories')} alt={category.name} />
-                  ) : (
+                      <img src={formData.imagePreview} alt="Preview" className="h-full object-contain mix-blend-multiply p-2" />
+                    ) : (
                     <>
                       <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400 mb-2">
                         <Upload size={24} />

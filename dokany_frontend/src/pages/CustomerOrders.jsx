@@ -162,7 +162,12 @@ const CustomerOrders = () => {
                           {order.items?.map((item, idx) => (
                             <div key={idx} className="flex items-center justify-between bg-white p-3 rounded-2xl border border-gray-100">
                               <div className="flex items-center gap-4">
-                                <img src={getImageUrl(product.imgUrl, 'Products')} alt={product.name} />
+                                <img 
+                                  src={item.imageUrl || item.imgUrl || 'https://placehold.co/100x100?text=Product'} 
+                                  alt={item.productName || item.name}
+                                  className="w-12 h-12 rounded-lg object-contain mix-blend-multiply border border-gray-100"
+                                  onError={(e) => { e.target.src = 'https://placehold.co/100x100?text=Product'; }}
+                                />
                                 <div>
                                   <p className="text-sm font-bold text-gray-800 line-clamp-1">{item.productName || item.name}</p>
                                   <p className="text-xs text-gray-500">الكمية: {item.quantity}</p>

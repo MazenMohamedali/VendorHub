@@ -63,8 +63,7 @@
               "ViewState": "AgIAAAsAAAAAAAAAAAAAABwAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-12T22:31:41.908Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -77,8 +76,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAFYAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-12T22:33:45.152Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -91,8 +89,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAC8AAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-12T22:34:03.265Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -105,8 +102,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-13T02:55:14.08Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -135,8 +131,7 @@
               "RelativeToolTip": "VendorHub\\Helpers\\ProductHelper.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T03:34:46.583Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-13T03:34:46.583Z"
             },
             {
               "$type": "Document",
@@ -148,8 +143,7 @@
               "RelativeToolTip": "VendorHub\\Services\\AccountService.cs",
               "ViewState": "AgIAAJ8AAAAAAAAAAAAwwL8AAABGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T02:52:56.31Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-13T02:52:56.31Z"
             },
             {
               "$type": "Document",
@@ -161,8 +155,7 @@
               "RelativeToolTip": "VendorHub\\Program.cs",
               "ViewState": "AgIAAE0AAAAAAAAAAAAAAFYAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-13T02:46:10.64Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-13T02:46:10.64Z"
             },
             {
               "$type": "Document",
@@ -174,8 +167,7 @@
               "RelativeToolTip": "VendorHub\\Services\\ProductService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAEUBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-12T23:36:27.681Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-12T23:36:27.681Z"
             },
             {
               "$type": "Document",
