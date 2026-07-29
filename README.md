@@ -275,9 +275,7 @@ Upon initial database seeding, a default Super Admin account is provisioned:
 ---
 
 ## 📄 Documentation Index
-- [Developer Project Review Guide](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/DEVELOPER_PROJECT_REVIEW_GUIDE.txt)
-- [Frontend API Integration Guide](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/FRONTEND_API_INTEGRATION_GUIDE.md)
-- [Project Refactoring Documentation](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/PROJECT_REFACTORING_DOCUMENTATION.txt)
+- [📘 Frontend API Integration & Complete Endpoints Reference Guide](docs/FRONTEND_API_INTEGRATION_GUIDE.md)
 
 ---
 
