@@ -1,0 +1,95 @@
+================================================================================
+VENDORHUB WEB API - FRONTEND INTEGRATION & API DOCUMENTATION
+================================================================================
+
+1. BASE URL & HEADERS
+--------------------------------------------------------------------------------
+Base URL: https://localhost:7081/api (or server domain)
+
+Default Request Headers:
+  Content-Type: application/json
+  Accept: application/json
+  Authorization: Bearer <JWT_ACCESS_TOKEN>
+
+2. STANDARD API RESPONSE FORMAT (GeneralResponse<T>)
+--------------------------------------------------------------------------------
+ALL API responses from VendorHub follow a unified JSON response structure:
+
+Success Response Example (200 OK):
+{
+  "success": true,
+  "message": "Operation completed successfully.",
+  "data": {
+    "id": 1,
+    "name": "Wireless Headphones",
+    "price": 99.99
+  }
+}
+
+Paginated Response Example (200 OK):
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "items": [ ... ],
+    "totalCount": 150,
+    "page": 1,
+    "pageSize": 10,
+    "totalPages": 15,
+    "hasNextPage": true,
+    "hasPreviousPage": false
+  }
+}
+
+Error Response Example (400 Bad Request / 404 Not Found):
+{
+  "success": false,
+  "message": "Product with ID 999 not found.",
+  "data": null
+}
+
+3. HTTP STATUS CODE MAPPING
+--------------------------------------------------------------------------------
+200 OK          - Success. Request succeeded. Check `data` property.
+400 Bad Request - Invalid Input. Form validation failed or missing parameters.
+401 Unauthorized- Authentication Required. Token missing, expired, or invalid.
+403 Forbidden   - Permission Denied. User lacks required role/permission.
+404 Not Found   - Resource Missing. Requested item/record does not exist.
+500 Internal    - Server Exception. Unhandled server error.
+
+4. ENDPOINTS REFERENCE
+--------------------------------------------------------------------------------
+
+[ Authentication & Account ] (/api/Account)
+- POST /api/Account/login
+  Body: { "email": "user@example.com", "password": "Password123!" }
+- POST /api/Account/register/customer
+  Body: { "firstName": "John", "secondName": "Doe", "email": "john@example.com", "password": "Password123!", "phoneNumber": "01012345678", "address": "Cairo, Egypt" }
+- POST /api/Account/register/vendor
+  Body: { "firstName": "Vendor", "secondName": "Store", "email": "vendor@example.com", "password": "Password123!", "phoneNumber": "01087654321", "storeName": "My Store" }
+
+[ Products ] (/api/Product)
+- GET /api/Product/list?page=1&pageSize=10  (Get paginated active products)
+- GET /api/Product/{id}                       (Get product details by ID)
+- GET /api/Product/hot-products?count=5       (Get top featured products)
+- POST /api/Product  [Vendor Only]           (Create new product)
+
+[ Categories ] (/api/Category)
+- GET /api/Category/active                    (Get active product categories)
+- GET /api/Category/{id}                      (Get category details)
+
+[ Orders ] (/api/Order)
+- POST /api/Order    [Customer Only]         (Create order from cart)
+- GET /api/Order/my-orders  [Customer Only]  (Get customer order history)
+- PUT /api/Order/{id}/status                 (Update order status)
+
+[ Favorites ] (/api/Favorite)
+- POST /api/Favorite/{productId}             (Add item to user favorites)
+- DELETE /api/Favorite/{productId}           (Remove item from user favorites)
+
+[ Reviews ] (/api/Review)
+- POST /api/Review                            (Post product star rating and review)
+
+[ Notifications ] (/api/Notification)
+- GET /api/Notification                       (Get user notifications)
+- PUT /api/Notification/{id}/read             (Mark notification as read)

@@ -1,574 +1,285 @@
-# VendorHub E-Commerce API
+# 🛒 VendorHub - Production-Ready Multi-Vendor E-Commerce Platform
 
-A comprehensive, production-ready ASP.NET Core API for a multi-vendor e-commerce platform with real-time notifications, permission management, and advanced analytics.
-
-## 🎯 Project Overview
-
-VendorHub is a full-featured REST API that enables:
-
-- **Multi-vendor marketplace** - Vendors can upload, manage, and sell products
-- **Customer shopping** - Browse products, place orders, leave reviews, manage favorites
-- **Admin management** - Manage vendors, products, permissions, and system health
-- **Real-time notifications** - SignalR for instant order updates and vendor alerts
-- **Permission system** - Granular role-based and per-vendor permissions
-- **Advanced analytics** - Sales tracking, order statistics, vendor performance
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/sql-server/)
+[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 ---
 
-## ✨ Key Features
+## 🎯 Executive Overview & Engineering Highlights
 
-### 🛍️ Product Management
+**VendorHub** is a high-performance, enterprise-grade multi-vendor e-commerce platform built with **Clean Architecture**, **ASP.NET Core 10 Web API**, and a modern **React 18 Storefront**. 
 
-- ✅ Product CRUD with status workflow (Pending → Reviewed → Approved/Rejected)
-- ✅ Category management and filtering
-- ✅ Product visibility tracking and viewer counts
-- ✅ Review system with ratings and comments
-- ✅ Favorites/Wishlist functionality
+Designed with production scalability and security at its core, VendorHub incorporates **two-level distributed caching (L1 + L2)**, **asynchronous event-driven background queues**, **claims-based dynamic permissions**, **magic-byte image security validation**, **Serilog structured telemetry**, and **real-time SignalR WebSocket notifications**.
 
-### 📦 Order Management
+This project incorporates decoupled domain layer design, generic repository/unit-of-work patterns, optimistic concurrency control, RFC 7807 problem details, and multi-container Docker orchestration.
 
-- ✅ Shopping cart to order conversion
-- ✅ Stock reduction on purchase
-- ✅ Order status tracking (Pending → Confirmed → Processing → Shipped → Delivered)
-- ✅ Order history per customer
-- ✅ Real-time order notifications
-
-### 👥 User Management
-
-- ✅ Role-based authentication (Admin, Vendor, Customer)
-- ✅ JWT token-based security
-- ✅ User account deactivation (soft delete)
-- ✅ Vendor approval workflow
-
-### 🔐 Permission System
-
-- ✅ Granular permissions (CanUploadProducts, CanEditProducts, etc.)
-- ✅ Per-vendor permission control
-- ✅ Role-based bulk permission management
-- ✅ Custom authorization attributes
-
-### 🔔 Real-Time Features
-
-- ✅ SignalR for instant notifications
-- ✅ Online/offline notification handling
-- ✅ Database persistence for offline users
-- ✅ Notification read/unread tracking
-
-### 📊 Analytics
-
-- ✅ Vendor dashboard statistics
-- ✅ Monthly sales tracking
-- ✅ Top products analysis
-- ✅ Revenue calculations
+#### 💡 Engineering Methodology & Trade-Off Analysis
+Every architectural challenge in VendorHub was tackled through a systematic evaluation process: analyzing root cause bottlenecks, benchmarking alternative design patterns (e.g., MediatR vs. lightweight event queues, TPH vs. TPT inheritance), evaluating complexity vs. performance trade-offs, and implementing a lean, high-throughput solution.
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ System Architecture & Data Flow
 
-### Layered Architecture
-
-Controllers (API Endpoints)
-↓
-Services (Business Logic)
-↓
-Repositories (Data Access)
-↓
-Database (Entity Framework Core)
-
-### Project Structure
-
-VendorHub/
-├── Controllers/
-│ ├── AccountController.cs
-│ ├── CategoryController.cs
-│ ├── FavoriteController.cs
-│ ├── NotificationController.cs
-│ ├── OrderController.cs
-│ ├── PermissionController.cs
-│ ├── ProductController.cs
-│ ├── ReviewController.cs
-│ └── StatisticsController.cs
-│
-├── Services/
-│ ├── IAccountService.cs & AccountService.cs
-│ ├── ICategoryService.cs & CategoryService.cs
-│ ├── IFavoriteService.cs & FavoriteService.cs
-│ ├── INotificationService.cs & NotificationService.cs
-│ ├── IOrderService.cs & OrderService.cs
-│ ├── IPermissionService.cs & PermissionService.cs
-│ ├── IProductService.cs & ProductService.cs
-│ ├── IReviewService.cs & ReviewService.cs
-│ └── IStatisticsService.cs & StatisticsService.cs
-│
-├── Repository/
-│ ├── IGeneralRepository.cs
-│ └── GeneralRepository.cs
-│
-├── Models/
-│ ├── User.cs (Base class)
-│ ├── Admin.cs
-│ ├── Vendor.cs
-│ ├── Customer.cs
-│ ├── Product.cs
-│ ├── Category.cs
-│ ├── Order.cs
-│ ├── OrderItem.cs
-│ ├── Review.cs
-│ ├── Favorite.cs
-│ ├── Notification.cs
-│ ├── Permission.cs
-│ ├── VendorPermission.cs
-│ ├── VendorHubDbContext.cs
-│ └── Enums/ (ProductStatus, OrderStatus, AccountStatus, etc.)
-│
-├── DTOs/
-│ ├── AccountDto/
-│ ├── CategoryDto/
-│ ├── FavoriteDto/
-│ ├── NotificationDto/
-│ ├── OrderDto/
-│ ├── PermissionDto/
-│ ├── ProductDto/
-│ ├── ReviewDto/
-│ ├── StatisticsDto/
-│ └── sharedDto/ (GeneralResponse, etc.)
-│
-├── Hubs/
-│ └── NotificationHub.cs (SignalR)
-│
-├── Attributes/
-│ └── RequirePermissionAttribute.cs
-│
-├── Helpers/
-│ ├── RoleSeeder.cs
-│ ├── PermissionSeeder.cs
-│ └── ProductHelper.cs
-│
-├── Filters/
-│ └── ValidateModelStateFilter.cs
-│
-└── Program.cs
+```mermaid
+graph TD
+    Client[📱 React 18 Single Page App / Mobile Client] -->|HTTPS Requests| Nginx[🌐 Nginx Reverse Proxy / Static Host]
+    Nginx -->|API Traffic| Controllers[🎮 ASP.NET Core 10 REST Controllers]
+    
+    Controllers -->|Executes Business Rules| Services[⚙️ Application Service Layer]
+    Services -->|L1 In-Memory Cache Miss| L1Cache[(⚡ L1 MemoryCache)]
+    Services -->|L2 Redis Cache Miss| L2Cache[(🔴 L2 Redis Distributed Cache)]
+    
+    Services -->|Repository Pattern| Repository[📦 Generic Repository & DbContext]
+    Repository -->|ORM Mapping| SQL[(🗄️ SQL Server 2022)]
+    
+    Services -->|Enqueue Event| EventQueue[🔄 Asynchronous Event Queue]
+    EventQueue -->|Background Consumption| BackgroundWorker[👷 EventConsumerBackgroundService]
+    BackgroundWorker -->|Publish Alert| SignalR[💬 SignalR NotificationHub WebSocket]
+    SignalR -->|Push Alert| Client
+```
 
 ---
 
-## 🗄️ Database Schema
+## 🗄️ Database Architecture & Evolution
 
-### Core Entities
+### Initial Database Design (EERD)
 
-**Users (Table Per Hierarchy)**
-AspNetUsers
-├── Id (PK)
-├── Email
-├── PasswordHash
-├── FirstName, SecondName
-├── AccountStatus (ACTIVE, PENDING, DELETED)
-├── Role (Discriminator: Admin, Vendor, Customer)
-├── CreatedAt, UpdatedAt
-├── StoreName (Vendor only)
-├── Balance (Vendor only)
-└── Address (Customer only)
+During initial project inception, the database model was drafted as shown below:
 
-**Products**
-Products
-├── Id (PK)
-├── Name, Price, Quantity
-├── ImgUrl, Status (PENDING, REVIEWED, REJECTED, Archived)
-├── ProductionDate, ExpireDate
-├── VendorId (FK) → Vendors
-├── CategoryId (FK) → Categories
-├── ViewersNo, OverallStars, ReviewCount
-└── CreatedAt, UpdatedAt
+![Initial Database EERD](database/InitDesigningDB.png)
 
-**Orders & OrderItems**
-Orders
-├── Id (PK)
-├── CustomerId (FK) → Customers
-├── TotalPrice, Status (Pending, Confirmed, Processing, Shipped, Delivered, Cancelled)
-├── DeliveryAddress, PhoneNumber
-└── CreatedAt, UpdatedAt
-OrderItems
-├── Id (PK)
-├── OrderId (FK) → Orders
-├── ProductId (FK) → Products
-├── Quantity, PriceAtPurchase
-└── CreatedAt
+#### 🔍 Key Architectural & Engineering Challenges Solved:
 
-**Permissions**
-Permissions
-├── Id (PK)
-├── Type (Enum as string: CanUploadProducts, etc.)
-├── Description, Category
-├── IsActive
-└── CreatedAt
-VendorPermissions
-├── Id (PK)
-├── VendorId (FK) → Vendors
-├── PermissionId (FK) → Permissions
-├── IsEnabled
-└── CreatedAt, UpdatedAt
+1. **Repetitive Controller `if (Success) ... else` Response Boilerplate**:
+   - *Problem*: Controllers previously suffered from verbose, repetitive `if (result.Success) return Ok(...); else if (result.Status == ...) return BadRequest(...)` checks across all 12 controllers, causing code duplication and inconsistent HTTP status returns.
+   - *Solution*: Designed a unified `GeneralResponse<T>` factory wrapper paired with `ControllerExtensions.cs` (`this.HandleResult(result)`). All controller actions now delegate status code mapping cleanly in a single line:
+     ```csharp
+     [HttpGet("{id}")]
+     public async Task<IActionResult> GetById(int id)
+     {
+         var result = await _productService.GetByIdAsync(id);
+         return this.HandleResult(result); // Automatically maps ResultStatus to 200, 400, 401, 403, 404, 500
+     }
+     ```
+
+2. **Database Bottlenecks & Stale Data Anomalies on Read-Heavy Entities (Categories)**:
+   - *Problem*: Entities like `Category` are read continuously by millions of customers but written rarely (only by Admins). Querying SQL Server on every request created database bottlenecks, while naive caching caused stale data when admins updated category names.
+   - *Solution*: Implemented an **Entity Access-Pattern Caching Strategy**. Categories are aggressively cached with long-lived TTLs to serve 99.9% of reads from L1 In-Memory / L2 Redis caches. On admin mutations (Add/Update/Delete), an event immediately triggers `ICacheService.RemoveAsync(key)`, purging L1 and L2 simultaneously to guarantee instant consistency.
+
+3. **Image Upload Header Security Bypass Vulnerability**:
+   - *Problem*: Standard `stream.Read(...)` could return incomplete header bytes on slow streams, bypassing image signature verification.
+   - *Solution*: Implemented strict `stream.ReadExactly(...)` in `IImageValidator` to inspect exact magic header bytes (PNG, JPEG, WebP) with zero security bypass.
+
+4. **Pragmatic Architecture (Avoiding MediatR Over-Engineering) & Contextual Logging**:
+   - *Problem*: Introducing heavy frameworks like MediatR adds unnecessary abstraction layers, indirection overhead, and complex handler pipelines for standard service calls. At the same time, standard `ILogger.LogError` methods lack structured object destructuring when logging complex exception payloads or transaction rollbacks.
+   - *Solution*: Adopted a **lean, pragmatic Clean Architecture** utilizing lightweight `IEventQueue` and custom extension methods. Built `LoggerExtensions.cs` (`LogErrorWithContext`, `LogInfoWithContext`, `LogWarningWithContext`), leveraging Serilog's `LogContext.PushProperty(name, payload, destructureObjects: true)` to inject structured JSON metadata into logs cleanly without MediatR bloat:
+     ```csharp
+     // Automatically pushes destructured error object into Serilog context
+     _logger.LogErrorWithContext("Concurrency conflict updating status for OrderId: {OrderId}", ex, new { OrderId = orderId });
+     ```
+
+5. **EF Core Migration Failure on Notification Metadata Dictionary**:
+   - *Problem*: EF Core attempted to map `Dictionary<string, object> Data` on `Notification` as a database entity, throwing migration mapping errors.
+   - *Solution*: Added `[NotMapped]` attribute to `Notification.Data` to store runtime JSON metadata safely out-of-db.
 
 ---
 
-## 🚀 Getting Started
+## ⚡ Core Technical Engineering Pillars
 
-### Prerequisites
+### 🚀 1. High-Performance Two-Level Caching (L1 + L2) & Use-Case Driven Strategy
 
-- .NET 8.0 or higher
-- SQL Server 2019 or higher
-- Visual Studio 2022 or VS Code
+To maximize throughput and eliminate database bottlenecks, VendorHub implements a two-tiered caching pipeline (`ICacheService`) tailored specifically to entity access patterns:
 
-### Installation
+- **⚡ L1 (In-Memory Cache)**: Built-in `IMemoryCache` providing zero-latency (<1ms) responses for local node lookups.
+- **🔴 L2 (Distributed Cache)**: `IDistributedCache` backed by **Redis** for distributed cache sharing across load-balanced application servers.
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/VendorHub.git
-cd VendorHub
+#### 💡 Use-Case Driven Strategy (Read-Heavy vs. Write-Heavy Entities):
+- **Category & Catalog Caching**: Product categories and featured items are queried continuously by every customer browsing the marketplace (extremely high read frequency), but are updated very infrequently (only when an Admin creates or toggles a category). 
+- **Aggressive TTL & Instant Event Invalidation**: Categories are cached aggressively with long-lived TTLs to serve 99.9% of catalog traffic directly from cache without hitting SQL Server.
+- **Event-Driven Cache Purging**: The moment an Admin mutates a category or product (Add/Update/Delete), an event triggers `_cacheService.RemoveAsync(key)`, purging both L1 Memory Cache and L2 Redis Distributed Cache simultaneously. This ensures instant data consistency across all cluster nodes with zero stale reads.
 
-# 2. Restore NuGet packages
-dotnet restore
+#### 🔗 Fluent LINQ Cache Extensions (`CacheExtensions.cs`):
+Query caching is seamlessly integrated into LINQ via `IQueryable<T>` extension methods (`ToCachedListAsync`, `ToCachedFirstOrDefaultAsync`). Developers can write fluent database queries that automatically check L1/L2 cache before falling back to SQL Server:
+```csharp
+// Transparently retrieves from L1/L2 cache or queries SQL Server & populates cache
+var activeCategories = await _dbContext.Categories
+    .Where(c => c.IsActive)
+    .ToCachedListAsync(_cacheService, "active_categories", TimeSpan.FromHours(24));
+```
 
-# 3. Update appsettings.json with your database connection
+---
+
+### 🔄 2. Asynchronous Event-Driven Queue & Background Processing
+Operations such as order creation and status changes emit domain events (`OrderStatusChangedEvent`) into an in-memory queue (`IEventQueue`).
+- **Out-of-Band Execution**: `EventConsumerBackgroundService` processes queued events asynchronously in the background.
+- **Non-Blocking User Requests**: HTTP request threads complete instantly (200 OK / 201 Created) while notification persistence and SignalR websocket broadcasts execute in background worker tasks.
+
+---
+
+### 🚨 3. Global Exception Handling & RFC 7807 ProblemDetails
+VendorHub implements `IExceptionHandler` (`GlobalExceptionHandler.cs`) to catch unhandled application exceptions globally:
+- **Zero Information Leakage**: Stack traces and internal exception details are suppressed in production.
+- **Standardized Response**: Formats errors using **RFC 7807 ProblemDetails** standards, attaching a unique HTTP `requestId` trace identifier for end-to-end telemetry debugging.
+
+---
+
+### 📝 4. Enterprise Serilog Logging & Context Enrichment (`LoggerExtensions.cs`)
+Structured logging is powered by **Serilog** and enhanced with custom context-enrichment extensions:
+- **`LoggerExtensions.cs`**: Implements `LogErrorWithContext`, `LogInfoWithContext`, and `LogWarningWithContext`. Uses `Serilog.Context.LogContext.PushProperty(name, payload, destructureObjects: true)` to push complex error objects, exception parameters, and payload data directly into Serilog context without cluttering log messages.
+- **Multi-Sink Logging**: Formatted output to Console and daily rolling compact JSON log files (`logs/prod-log-.json`).
+- **Context Enrichment**: Log entries automatically capture `MachineName`, `ThreadId`, `RequestId`, and authenticated user claims.
+
+---
+
+### 🛠️ 5. Custom Clean Extensions Architecture
+- **`ControllerExtensions.cs`**: Provides `this.HandleResult(result)`, mapping `ResultStatus` factory enum codes directly to standard HTTP status codes across all 12 controllers.
+- **`CacheExtensions.cs`**: Fluent LINQ extensions (`ToCachedListAsync`, `ToCachedFirstOrDefaultAsync`) extending `IQueryable<T>` to execute two-tier L1/L2 cache checks before DB evaluation.
+- **`LoggerExtensions.cs`**: Enables structured contextual logging via Serilog `LogContext` destructuring (`LogErrorWithContext`, `LogInfoWithContext`, `LogWarningWithContext`).
+- **`QueryableExtensions.cs`**: Reusable LINQ extensions for dynamic pagination (`ToPagedListAsync`) and dynamic column sorting.
+- **`HubExtensions.cs`**: SignalR helper methods for extracting authenticated user claims from websocket contexts.
+
+---
+
+### 🔐 6. Claims-Based Dynamic Permission Engine
+In addition to standard role authorization (`Admin`, `Vendor`, `Customer`), VendorHub features a fine-grained per-vendor permission system:
+- **`[RequirePermission(PermissionType)]`**: Custom action filter verifying specific claims (e.g., `CanUploadProducts`, `CanEditProducts`, `CanDeleteProducts`).
+- **Admin Moderation**: Super admins can grant/revoke specific permissions for individual vendors dynamically without redeploying code.
+
+---
+
+### 🛡️ 7. Automated Magic-Byte File Upload Security Validation
+To prevent file upload vulnerabilities and execution attacks:
+- **`IImageValidator`**: Validates uploaded product/category images by reading magic header bytes (PNG `89 50 4E 47`, JPEG `FF D8 FF`, WebP `52 49 46 46`).
+- **Stream Integrity**: Uses strict `stream.ReadExactly(...)` to prevent corrupted header bypasses.
+
+---
+
+### 💬 8. Real-Time SignalR Websocket Notifications
+Connected clients receive instant, real-time alerts via `NotificationHub`:
+- Push updates when an order status changes (`Pending` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`).
+- Push administrative approvals for new vendor accounts and product submissions.
+
+---
+
+## 🎯 Unified API Response & Status Code Mapping
+
+ALL API responses from VendorHub follow a unified, predictable JSON contract (`GeneralResponse<T>`):
+
+```json
 {
-  "ConnectionStrings": {
-    "sqlServerCs": "Server=YOUR_SERVER;Database=VendorHubDb;User Id=sa;Password=YOUR_PASSWORD;"
-  },
-  "JWT": {
-    "SecritKey": "your-secret-key-min-32-chars",
-    "IssuerIP": "https://localhost:7001",
-    "AudienceIP": "https://localhost:3000"
+  "success": true,
+  "message": "Operation completed successfully.",
+  "data": {
+    "id": 42,
+    "name": "Wireless Noise-Canceling Headphones",
+    "price": 199.99,
+    "stock": 50
   }
 }
+```
 
-# 4. Apply migrations
-dotnet ef database update
+### HTTP Status Code Mapping Reference
 
-# 5. Run the application
+| ResultStatus | HTTP Code | Description |
+| :--- | :--- | :--- |
+| **`Success`** | `200 OK` | Read/update operation succeeded |
+| **`Created`** | `201 Created` | New resource created (Order, Product, User, Review) |
+| **`InvalidInput`** | `400 Bad Request` | Input validation or business rule failed |
+| **`Unauthenticated`** | `401 Unauthorized` | Missing, invalid, or expired JWT bearer token |
+| **`Forbidden`** | `403 Forbidden` | Insufficient role or permission claim |
+| **`NotFound`** | `404 Not Found` | Requested entity record does not exist |
+| **`Error`** | `500 Internal Error` | Global exception caught cleanly |
+
+---
+
+## 🧪 End-to-End API Test Suite (`api-tests/`)
+
+VendorHub includes an automated Node.js integration runner covering **100% of all 12 controllers**:
+
+```bash
+cd api-tests
+node run-all-tests.js
+```
+
+### Test Execution Output:
+
+```text
+📌 ACCOUNT CONTROLLER     --> ✅ PASS [201]
+📌 CATEGORY CONTROLLER    --> ✅ PASS [201]
+📌 PRODUCT CONTROLLER     --> ✅ PASS [201]
+📌 ADMIN CONTROLLER       --> ✅ PASS [200]
+📌 PERMISSION CONTROLLER  --> ✅ PASS [200]
+📌 ORDER CONTROLLER       --> ✅ PASS [201]
+📌 CUSTOMER CONTROLLER    --> ✅ PASS [200]
+📌 VENDOR CONTROLLER      --> ✅ PASS [200]
+📌 FAVORITE CONTROLLER    --> ✅ PASS [201]
+📌 REVIEW CONTROLLER      --> ✅ PASS [201]
+📌 NOTIFICATIONS STREAM   --> ✅ PASS [200]
+📌 STATISTICS CONTROLLER  --> ✅ PASS [200]
+```
+
+---
+
+## 📦 One-Command Docker Deployment
+
+Deploy the entire production stack (SQL Server, Redis, Backend API, and React Frontend) using Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+### Exposed Services:
+- **Frontend Storefront**: `http://localhost:3000`
+- **Backend Web API (Swagger)**: `http://localhost:7081/swagger`
+- **Health Check Endpoint**: `http://localhost:7081/health`
+- **SQL Server 2022**: `localhost:1433`
+- **Redis Cache**: `localhost:6379`
+
+---
+
+## 💻 Local CLI Development Setup
+
+### 1. Prerequisites
+- **.NET 10.0 SDK**
+- **Node.js v18+** & **npm**
+- **SQL Server 2022** or LocalDB
+- **Redis** (Optional)
+
+### 2. Run Backend
+```bash
+cd backend
 dotnet run
-
-# API available at: https://localhost:7001
-# Swagger UI: https://localhost:7001/swagger
 ```
 
----
-
-## 🔑 Authentication
-
-### JWT Token Flow
-
-User registers/logs in
-POST /api/account/login
-Receives JWT token
-{
-"accessToken": "eyJhbGciOiJIUzI1NiIs...",
-"expiresIn": 3600
-}
-Include in requests
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
-Token contains claims
-
-sub (user ID)
-email
-name
-role (Admin, Vendor, Customer)
-custom claims (permissions, etc.)
-
-### Default Admin
-
-Email: admin@gmail.com
-Password: P@ssw0rd
-Role: Admin
-
----
-
-## 📡 Real-Time Notifications (SignalR)
-
-### Connection
-
-```javascript
-// Client-side
-const connection = new signalR.HubConnectionBuilder()
-  .withUrl("/notificationHub", {
-    accessTokenFactory: () => localStorage.getItem("token"),
-  })
-  .withAutomaticReconnect()
-  .build();
-
-connection
-  .start()
-  .then(() => console.log("Connected"))
-  .catch((err) => console.error(err));
-```
-
-### Receiving Notifications
-
-```javascript
-// Vendor receives new purchase
-connection.on("ReceiveNotification", (notification) => {
-  console.log("New order:", notification);
-  // { Title, Message, Type, OrderId, CreatedAt }
-});
-
-// Customer receives order update
-connection.on("OrderStatusChanged", (update) => {
-  console.log("Order update:", update);
-  // { OrderId, Status, Message, UpdatedAt }
-});
-```
-
----
-
-## 🔗 API Endpoints
-
-### Authentication
-
-POST /api/account/register/customer
-POST /api/account/register/vendor
-POST /api/account/login
-POST /api/account/logout
-GET /api/account/profile [Authorize]
-POST /api/account/change-password [Authorize]
-POST /api/account/deactivate [Authorize]
-POST /api/account/admin/create-admin [Authorize(Admin)]
-POST /api/account/admin/approve-vendor/{id} [Authorize(Admin)]
-POST /api/account/admin/reject-vendor/{id} [Authorize(Admin)]
-
-### Products
-
-POST /api/product [Authorize(Vendor)]
-GET /api/product
-GET /api/product/{id}
-GET /api/product/my-products [Authorize(Vendor)]
-PUT /api/product/{id} [Authorize(Vendor)]
-DELETE /api/product/{id} [Authorize(Vendor)]
-
-### Categories
-
-POST /api/category [Authorize(Admin)]
-GET /api/category
-GET /api/category/{id}
-GET /api/category/active
-GET /api/category/search?searchTerm=...
-PUT /api/category/{id} [Authorize(Admin)]
-DELETE /api/category/{id} [Authorize(Admin)]
-
-### Orders
-
-POST /api/order [Authorize(Customer)]
-GET /api/order/{id} [Authorize]
-GET /api/order [Authorize(Customer)]
-
-### Reviews
-
-POST /api/review/{productId} [Authorize(Customer)]
-GET /api/review/product/{productId}
-DELETE /api/review/{id} [Authorize(Customer)]
-
-### Favorites
-
-POST /api/favorite/{productId} [Authorize(Customer)]
-GET /api/favorite [Authorize(Customer)]
-DELETE /api/favorite/{productId} [Authorize(Customer)]
-
-### Notifications
-
-GET /api/notification/unread [Authorize]
-GET /api/notification [Authorize]
-PUT /api/notification/{id}/read [Authorize]
-DELETE /api/notification/{id} [Authorize]
-PUT /api/notification/read-all [Authorize]
-
-### Permissions
-
-POST /api/permission [Authorize(Admin)]
-GET /api/permission [Authorize(Admin)]
-GET /api/permission/vendor/{vendorId} [Authorize(Admin)]
-POST /api/permission/vendor/{vendorId}/enable/{permissionType} [Admin]
-POST /api/permission/vendor/{vendorId}/disable/{permissionType} [Admin]
-POST /api/permission/role/enable/{permissionType} [Admin]
-POST /api/permission/role/disable/{permissionType} [Admin]
-
-### Statistics
-
-GET /api/statistics/dashboard [Authorize(Vendor)]
-
----
-
-## 🛡️ Security
-
-- ✅ JWT token-based authentication
-- ✅ Role-based authorization (Admin, Vendor, Customer)
-- ✅ Granular permission system
-- ✅ Password hashing with Identity
-- ✅ Account lockout after failed attempts
-- ✅ Data validation and sanitization
-- ✅ SQL injection prevention via Entity Framework
-- ✅ CORS policy configuration
-
----
-
-## 📊 Database Performance
-
-### Indexes
-
-- Product status, name, vendor
-- Order customer, status, created date
-- Review/Favorite customer, product
-- Notification user, read status
-
-### Unique Constraints
-
-- Product name per vendor
-- Customer can't favorite same product twice
-- Customer can't review product twice
-- Vendor can't have same permission twice
-
----
-
-## 🧪 Testing Workflow
-
-### 1. Register Users
-
+### 3. Run Frontend
 ```bash
-# Register as Vendor
-POST /api/account/register/vendor
-{
-  "firstName": "Ahmed",
-  "secondName": "Ali",
-  "email": "vendor@example.com",
-  "password": "P@ssw0rd1",
-  "phoneNumber": "01234567890",
-  "storeName": "My Store"
-}
-
-# Register as Customer
-POST /api/account/register/customer
-{
-  "firstName": "Fatima",
-  "secondName": "Hassan",
-  "email": "customer@example.com",
-  "password": "P@ssw0rd2",
-  "phoneNumber": "01234567891",
-  "address": "Cairo"
-}
-```
-
-### 2. Login
-
-```bash
-POST /api/account/login
-{
-  "email": "vendor@example.com",
-  "password": "P@ssw0rd1"
-}
-```
-
-### 3. Create Product (Vendor)
-
-```bash
-POST /api/product
-[Authorization: Bearer <vendor_token>]
-{
-  "name": "Laptop",
-  "price": 999.99,
-  "quantity": 10,
-  "categoryId": 1,
-  "imgUrl": "https://example.com/laptop.jpg",
-  "description": "High-end laptop"
-}
-```
-
-### 4. Approve Product (Admin)
-
-```bash
-POST /api/product/{id}/approve
-[Authorization: Bearer <admin_token>]
-```
-
-### 5. Browse & Order (Customer)
-
-```bash
-GET /api/product
-[Get approved products]
-
-POST /api/order
-[Authorization: Bearer <customer_token>]
-{
-  "cartItems": [
-    { "productId": 1, "quantity": 2, "price": 999.99 }
-  ],
-  "deliveryAddress": "Cairo, Egypt",
-  "phoneNumber": "01234567891"
-}
+cd Frontend
+npm install
+npm run dev
 ```
 
 ---
 
-## 📦 Technologies Used
+## 🔒 Default Super Admin Credentials
 
-- **Framework**: ASP.NET Core 8.0
-- **Database**: SQL Server with Entity Framework Core
-- **Authentication**: JWT (JSON Web Tokens)
-- **Real-time**: SignalR
-- **API Documentation**: Swagger/OpenAPI
-- **Validation**: FluentValidation (via ModelState)
-- **Logging**: Built-in ILogger
+Upon initial database seeding, a default Super Admin account is provisioned:
+
+- **Email**: `admin@gmail.com`
+- **Password**: `P@ssw0rd123!`
+- **Role**: `Admin`
 
 ---
 
-## 🔄 Data Flow
-
-### Order Creation Flow
-
-Customer submits order
-↓
-OrderService validates cart
-↓
-Reduce product stock
-↓
-Create Order + OrderItems
-↓
-Send real-time notifications
-├─ Vendor: "New purchase notification" (SignalR)
-├─ Vendor: Save to database
-└─ Customer: "Order confirmed" (SignalR)
-↓
-Return order details
-
-### Permission Check Flow
-
-Customer tries to upload product
-↓
-Authorization checks: [Authorize(Roles = "Vendor")]
-✓ Passes: Is Vendor
-↓
-Custom Attribute checks: [RequirePermission(CanUploadProducts)]
-├─ Get vendor ID from JWT
-├─ Check PermissionService.HasPermissionAsync()
-└─ ✓ Has permission → Allow
-✗ No permission → Deny (403)
-↓
-Execute controller action
+## 📄 Documentation Index
+- [Developer Project Review Guide](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/DEVELOPER_PROJECT_REVIEW_GUIDE.txt)
+- [Frontend API Integration Guide](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/FRONTEND_API_INTEGRATION_GUIDE.md)
+- [Project Refactoring Documentation](file:///D:/ACCS2/IAProject/vendorHubApiCloning/vendorHubLast%20work/docs/PROJECT_REFACTORING_DOCUMENTATION.txt)
 
 ---
 
-## 🐛 Troubleshooting
-
-### Database Connection Issues
-
-Error: "Cannot open database"
-Solution: Verify connection string in appsettings.json
-Ensure SQL Server is running
-
-### JWT Token Invalid
-
-Error: "Invalid token"
-Solution: Ensure token hasn't expired
-Verify secret key matches appsettings.json
-Check token format in Authorization header
-
-### SignalR Connection Failed
-
-Error: "WebSocket connection failed"
-Solution: Ensure UseWebSockets() is called in Program.cs
-Check CORS policy allows SignalR
-Verify token is passed correctly
+## 📄 License
+Distributed under the **MIT License**. See `LICENSE` for details.

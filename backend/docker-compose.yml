@@ -13,7 +13,7 @@ services:
     volumes:
       - sqldata:/var/opt/mssql
     networks:
-      - vendorhub-net
+      - backend-net
     restart: always
 
   redis:
@@ -22,12 +22,12 @@ services:
     ports:
       - "6379:6379"
     networks:
-      - vendorhub-net
+      - backend-net
     restart: unless-stopped
 
   api:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: vendorhub-api
     environment:
@@ -44,20 +44,7 @@ services:
       - mssql
       - redis
     networks:
-      - vendorhub-net
-    restart: always
-
-  frontend:
-    build:
-      context: ./Frontend
-      dockerfile: Dockerfile
-    container_name: vendorhub-frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - api
-    networks:
-      - vendorhub-net
+      - backend-net
     restart: always
 
 volumes:
@@ -65,5 +52,5 @@ volumes:
     driver: local
 
 networks:
-  vendorhub-net:
+  backend-net:
     driver: bridge

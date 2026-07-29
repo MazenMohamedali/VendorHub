@@ -1,0 +1,76 @@
+================================================================================
+VENDORHUB WEB API - PROJECT REFACTORING & CHANGES LOG
+================================================================================
+
+1. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+This document details all technical changes, architectural enhancements, bug fixes, 
+performance optimizations, and testing infrastructure implemented across the 
+VendorHub Web API codebase. The project has been transformed into a Clean Architecture, 
+Production-Ready, High-Performance ASP.NET Core 10 Web API.
+
+2. ENTITY FRAMEWORK CORE & DATABASE MODEL FIXES
+--------------------------------------------------------------------------------
+1.1 Notification.Data Property Ignored from Database Mapping
+- File: VendorHub/Models/Notification.cs
+- Issue: EF Core attempted to map Dictionary<string, object> Data as an unconfigured 
+  entity, causing model building errors during migrations.
+- Fix: Added [NotMapped] attribute to Notification.Data.
+
+1.2 Composite Key Configuration for Favorite Entity
+- File: VendorHub/Models/VendorHubDbContext.cs
+- Issue: Favorite entity had dual primary keys (CustomerId and ProductId) without 
+  a single [Key] property, causing EF Core model initialization failure.
+- Fix: Configured composite primary key in OnModelCreating:
+  modelBuilder.Entity<Favorite>().HasKey(f => new { f.CustomerId, f.ProductId });
+
+1.3 Inverse Navigation on OrderItem Relationship
+- File: VendorHub/Models/VendorHubDbContext.cs
+- Issue: OrderItem configuration used .WithMany() without specifying p.OrderItems, 
+  causing EF Core to create a duplicate shadow foreign key column ProductId1.
+- Fix: Configured explicit inverse navigation property:
+  modelBuilder.Entity<OrderItem>()
+      .HasOne(oi => oi.Product)
+      .WithMany(p => p.OrderItems)
+      .HasForeignKey(oi => oi.ProductId)
+      .OnDelete(DeleteBehavior.Restrict);
+
+3. CLEAN ARCHITECTURE & RESPONSE STANDARDIZATION
+--------------------------------------------------------------------------------
+2.1 Unified Response Contract (GeneralResponse & ResultStatus)
+- Files: VendorHub/Models/ResultStatus.cs & VendorHub/DTOs/sharedDto/GeneralResponse.cs
+- Changes: Created ResultStatus enum and GeneralResponse<T> static factory methods 
+  (Succeeded, NotFound, InvalidInput, Unauthenticated, Forbidden, Error). Added 
+  [JsonConstructor] attributes for seamless JSON deserialization.
+
+2.2 Controller Result Handling (ControllerExtensions.cs)
+- File: VendorHub/Extensions/ControllerExtensions.cs
+- Changes: Introduced this.HandleResult(result) extension method. Maps ResultStatus 
+  directly to HTTP status codes (200 OK, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 
+  404 Not Found, 500 Server Error) across all 12 controllers.
+
+2.3 Refactored Services (11) & Controllers (12):
+- AccountService, CategoryService, CustomerService, FavoriteService, NotificationService, 
+  OrderService, PermissionService, ProductService, ReviewService, StatisticsService, VendorService.
+
+4. PERFORMANCE, CACHING & BUILD RELIABILITY
+--------------------------------------------------------------------------------
+3.1 Two-Level Cache Invalidation (CacheService.cs)
+- Files: VendorHub/Services/Caching/ICacheService.cs & CacheService.cs
+- Fix: Implemented complete cache purging for both L1 memory cache (IMemoryCache) 
+  and L2 distributed cache (IDistributedCache / Redis).
+
+3.2 High-Performance Stream Reading
+- File: VendorHub/Services/Storage/ImageValidator.cs
+- Fix: Replaced inexact stream.Read(sig, 0, 8) with stream.ReadExactly(sig).
+
+3.3 Package Manager Console Warning Traps
+- Files: VendorHub/VendorHub.csproj & root VendorHub.csproj
+- Fix: Added <NoWarn>$(NoWarn);NU1901;NU1902;NU1903;NU1904;NU1905;NU1510</NoWarn>.
+
+5. AUTOMATED TESTING ARCHITECTURE (VendorHub.Tests)
+--------------------------------------------------------------------------------
+- Created xUnit test project VendorHub.Tests with Microsoft.AspNetCore.Mvc.Testing and 
+  Microsoft.EntityFrameworkCore.InMemory.
+- Guarded database migrations in Program.cs with if (dbContext.Database.IsSqlServer()).
+- Test Results: 13 Passed, 0 Failed, 0 Skipped (100% Success).

@@ -1,0 +1,74 @@
+================================================================================
+VENDORHUB WEB API - DEVELOPER & PROJECT REVIEW GUIDE
+================================================================================
+
+1. EXECUTIVE OVERVIEW
+--------------------------------------------------------------------------------
+Welcome to the VendorHub Web API developer review guide. This document provides a 
+complete walkthrough of the project architecture, design patterns, database structure, 
+caching mechanism, and testing strategy.
+
+2. PROJECT ARCHITECTURE & DESIGN PATTERNS
+--------------------------------------------------------------------------------
+The project is structured according to Clean Architecture principles, ensuring 
+strict separation of concerns:
+
+VendorHub/
+├── Controllers/         # API Layer (Handles HTTP Requests & returns standardized GeneralResponse)
+├── Services/            # Business Logic Layer (Executes rules & returns GeneralResponse<T>)
+├── Repository/          # Data Access Layer (Generic Repository & Unit of Work pattern)
+├── Models/              # Entity Definitions & EF Core DbContext
+├── DTOs/                # Data Transfer Objects (Inputs & Outputs)
+├── Filters/             # Action Filters (Model validation)
+├── Middleware/          # Global Exception Handling & Security Middleware
+└── Extensions/          # Helper Extensions (ControllerExtensions, QueryableExtensions)
+
+Key Design Patterns:
+1. Generic Repository Pattern (IGeneralRepository<T>):
+   - Provides reusable CRUD methods (GetByIdAsync, GetByAsNoTracking, AddAsync, SaveAsync, BeginTransactionAsync).
+2. Standardized Response Factory (GeneralResponse<T>):
+   - Every service method returns a unified response wrapper (Success, Message, Status, Data).
+3. Controller Status Mapping (this.HandleResult(result)):
+   - Controllers do not manually write if/else HTTP statuses. HandleResult converts 
+     ResultStatus directly to appropriate HTTP responses (200 OK, 400 Bad Request, 
+     401 Unauthorized, 403 Forbidden, 404 Not Found, 500 Server Error).
+
+3. ENTITY FRAMEWORK CORE & DATABASE RULES
+--------------------------------------------------------------------------------
+Primary Entities:
+- User (IdentityUser): Base account for Admins, Customers, and Vendors.
+- Category: Product categories with active state toggle (IsActive).
+- Product: Items listed by vendors. Contains RowVersion timestamp for concurrency control.
+- Order & OrderItem: Sales transactions containing purchase snapshot prices.
+- Favorite: Customer saved items (uses composite key { CustomerId, ProductId }).
+- Notification: System notifications (Data metadata dictionary is marked [NotMapped]).
+
+Crucial EF Core Configurations in VendorHubDbContext.cs:
+- Composite Keys: Favorite entity uses .HasKey(f => new { f.CustomerId, f.ProductId }).
+- Delete Behaviors: Restricted deletes on critical relationships to prevent cascade 
+  deletions of historical orders or reviews.
+- Global Query Filters: Active filters applied to soft-deleted or unreviewed products.
+
+4. TWO-LEVEL CACHING SYSTEM (L1 + L2)
+--------------------------------------------------------------------------------
+Located in VendorHub.Services.Caching:
+1. L1 (Memory Cache): Instant in-memory lookups (IMemoryCache).
+2. L2 (Distributed Cache): Scalable Redis cache (IDistributedCache).
+
+Cache Purging Rule:
+When products or categories are added, updated, or deleted, _cacheService.RemoveAsync(key) 
+purges both L1 memory and L2 Redis caches simultaneously to ensure zero stale data.
+
+5. AUTOMATED TESTING SUITE (VendorHub.Tests)
+--------------------------------------------------------------------------------
+Automated tests reside in the VendorHub.Tests project:
+- Test Server: Uses WebApplicationFactory<Program> with isolated in-memory EF Core provider.
+- Running Tests: Run `dotnet test` in your terminal or Visual Studio Test Explorer.
+
+6. MAINTAINER CHECKLIST FOR FUTURE FEATURES
+--------------------------------------------------------------------------------
+When adding a new feature or endpoint:
+1. Create request/response DTOs in DTOs/.
+2. Add business logic method in Services/ returning GeneralResponse<T>.
+3. Add controller endpoint in Controllers/ returning `return this.HandleResult(result);`.
+4. Add an automated test case in VendorHub.Tests/.

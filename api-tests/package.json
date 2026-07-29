@@ -1,0 +1,22 @@
+{
+  "name": "vendorhub-api-tests",
+  "version": "1.0.0",
+  "description": "Automated End-to-End API Test Suite for VendorHub .NET 10 Web API",
+  "type": "module",
+  "main": "run-all-tests.js",
+  "scripts": {
+    "test": "node run-all-tests.js",
+    "test:account": "node test-account.js",
+    "test:category": "node test-category.js",
+    "test:product": "node test-product.js",
+    "test:admin": "node test-admin.js",
+    "test:permission": "node test-permission.js",
+    "test:order": "node test-order.js",
+    "test:vendor": "node test-vendor.js",
+    "test:customer": "node test-customer.js",
+    "test:favorite": "node test-favorite.js",
+    "test:review": "node test-review.js",
+    "test:notifications": "node test-notifications.js",
+    "test:statistics": "node test-statistics.js"
+  }
+}
