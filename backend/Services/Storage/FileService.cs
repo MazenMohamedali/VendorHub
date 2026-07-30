@@ -44,8 +44,7 @@ namespace VendorHub.Services.Storage
 
             try
             {
-                string ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                string fileName = $"{Guid.NewGuid():N}{ext}";
+                string fileName = $"{Guid.NewGuid():N}.webp";
 
                 string targetFolder = Path.Combine(_env.WebRootPath, "Images", folderName);
                 var filePath = Path.Combine(targetFolder, fileName);
@@ -58,10 +57,9 @@ namespace VendorHub.Services.Storage
 
                 Directory.CreateDirectory(targetFolder);
 
-                await using var stream = new FileStream(fullPath, FileMode.Create);
-                await file.CopyToAsync(stream);
+                await ImageCompressor.CompressAndSaveImageAsync(file, fullPath);
 
-                _logger.LogInformation("Image saved: {Path}", fullPath);
+                _logger.LogInformation("Compressed WebP image saved: {Path}", fullPath);
                 return fileName;
             }
             catch (IOException ex)
