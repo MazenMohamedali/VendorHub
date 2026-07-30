@@ -38,14 +38,28 @@ services:
       JWT__SecritKey: "${JWT_SECRET_KEY:-VendorHubSuperSecretKeyForJWTAuth2026!}"
       JWT__IssuerIP: "${JWT_ISSUER:-https://localhost:7081}"
       JWT__AudienceIP: "${JWT_AUDIENCE:-https://localhost:7081}"
+      Serilog__WriteTo__1__Args__serverUrl: "http://seq:5341"
     ports:
       - "7081:8080"
     depends_on:
       - mssql
       - redis
+      - seq
     networks:
       - vendorhub-net
     restart: always
+
+  seq:
+    image: datalust/seq:latest
+    container_name: vendorhub-seq
+    environment:
+      ACCEPT_EULA: "Y"
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    networks:
+      - vendorhub-net
+    restart: unless-stopped
 
   frontend:
     build:

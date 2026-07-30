@@ -4,6 +4,7 @@
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/sql-server/)
 [![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
+[![Seq](https://img.shields.io/badge/Seq-Log--Server-564592?style=for-the-badge&logo=seq&logoColor=white)](https://datalust.co/seq)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
@@ -13,7 +14,7 @@
 
 **VendorHub** is a high-performance, enterprise-grade multi-vendor e-commerce platform built with **Clean Architecture**, **ASP.NET Core 10 Web API**, and a modern **React 18 Storefront**. 
 
-Designed with production scalability and security at its core, VendorHub incorporates **two-level distributed caching (L1 + L2)**, **asynchronous event-driven background queues**, **claims-based dynamic permissions**, **magic-byte image security validation**, **Serilog structured telemetry**, and **real-time SignalR WebSocket notifications**.
+Designed with production scalability and security at its core, VendorHub incorporates **two-level distributed caching (L1 + L2)**, **SkiaSharp WebP image compression & optimization**, **asynchronous event-driven background queues**, **claims-based dynamic permissions**, **magic-byte image security validation**, **Serilog + Seq centralized log aggregation**, and **real-time SignalR WebSocket notifications**.
 
 This project incorporates decoupled domain layer design, generic repository/unit-of-work patterns, optimistic concurrency control, RFC 7807 problem details, and multi-container Docker orchestration.
 
@@ -236,6 +237,7 @@ docker-compose up --build
 - **Frontend Storefront**: `http://localhost:3000`
 - **Backend Web API (Swagger)**: `http://localhost:7081/swagger`
 - **Health Check Endpoint**: `http://localhost:7081/health`
+- **Seq Centralized Log Dashboard**: `http://localhost:5341`
 - **SQL Server 2022**: `localhost:1433`
 - **Redis Cache**: `localhost:6379`
 
