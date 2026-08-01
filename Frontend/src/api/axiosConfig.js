@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Connect directly to ASP.NET Core Web API backend
 const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5131';
+  const envUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7081';
   const cleanUrl = envUrl.replace(/\/+$/, '');
   return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 };

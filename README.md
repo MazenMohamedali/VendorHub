@@ -237,7 +237,6 @@ docker-compose up --build
 - **Frontend Storefront**: `http://localhost:3000`
 - **Backend Web API (Swagger)**: `http://localhost:7081/swagger`
 - **Health Check Endpoint**: `http://localhost:7081/health`
-- **Seq Centralized Log Dashboard**: `http://localhost:5341`
 - **SQL Server 2022**: `localhost:1433`
 - **Redis Cache**: `localhost:6379`
 

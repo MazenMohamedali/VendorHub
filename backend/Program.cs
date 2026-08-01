@@ -75,9 +75,7 @@ namespace VendorHub
                 });
 
             builder.Services.AddOpenApi();
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Services.AddSwaggerGen(options =>
+            builder.Services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc("v1", new OpenApiInfo
                     {
@@ -106,7 +104,6 @@ namespace VendorHub
                         }
                     });
                 });
-            }
 
             builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
             builder.Services.AddDbContext<VendorHubDbContext>(options =>
@@ -208,15 +205,7 @@ namespace VendorHub
             {
                 options.AddPolicy("MyPolicy", policy =>
                 {
-                    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
-                    if (allowedOrigins == null || allowedOrigins.Length == 0)
-                    {
-                        allowedOrigins = builder.Environment.IsDevelopment()
-                            ? new[] { "http://localhost:5173", "http://localhost:3000" }
-                            : new[] { "http://localhost:3000" };
-                    }
-
-                    policy.WithOrigins(allowedOrigins)
+                    policy.SetIsOriginAllowed(_ => true)
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -246,21 +235,22 @@ namespace VendorHub
 
             app.UseCors("MyPolicy");
 
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.Use(async (context, next) =>
-                {
-                    if (context.Request.Path == "/")
-                    {
-                        context.Response.Redirect("/swagger");
-                        return;
-                    }
-                    await next();
-                });
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "VendorHub API v1");
+                c.RoutePrefix = "swagger";
+            });
 
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/")
+                {
+                    context.Response.Redirect("/swagger");
+                    return;
+                }
+                await next();
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();

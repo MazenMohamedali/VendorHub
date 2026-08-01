@@ -20,6 +20,8 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+RUN mkdir -p /app/wwwroot/Images/Categories /app/wwwroot/Images/Products
+
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \

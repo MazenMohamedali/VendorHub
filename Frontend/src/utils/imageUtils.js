@@ -13,7 +13,7 @@ export const getImageUrl = (imgUrl, type = 'Products') => {
     return imgUrl;
   }
 
-  let baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5131';
+  let baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:7081';
   baseUrl = baseUrl.replace(/\/$/, '');
 
   const cleanPath = imgUrl.replace(/^\/+/, '');
