@@ -20,7 +20,7 @@ services:
     image: redis:alpine
     container_name: vendorhub-redis
     ports:
-      - "6379:6379"
+      - "7082:6379"
     networks:
       - vendorhub-net
     restart: unless-stopped

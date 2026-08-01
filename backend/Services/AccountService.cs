@@ -122,8 +122,15 @@ namespace VendorHub.Services
 
         public async Task CreateFirstAdminAsync(string firstName, string secondName, string email, string password, string phone, CancellationToken cancellationToken = default)
         {
-            var admins = await _userManager.GetUsersInRoleAsync("Admin");
-            if (admins.Any()) return;
+            var existingAdmin = await _userManager.FindByEmailAsync(email);
+            if (existingAdmin != null)
+            {
+                if (!await _userManager.IsInRoleAsync(existingAdmin, "Admin"))
+                {
+                    await _userManager.AddToRoleAsync(existingAdmin, "Admin");
+                }
+                return;
+            }
 
             var admin = new Admin
             {
@@ -138,7 +145,7 @@ namespace VendorHub.Services
             var result = await _userManager.CreateAsync(admin, password);
             if (!result.Succeeded)
             {
-                _logger.LogErrorWithContext("Failed to establish seed administrator account.", result.Errors, email);
+                _logger.LogWarning("Seed administrator account initialization notice for {Email}: {Errors}", email, string.Join(", ", result.Errors.Select(e => e.Description)));
                 return;
             }
 
