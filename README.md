@@ -265,16 +265,6 @@ npm run dev
 
 ---
 
-## 🔒 Default Super Admin Credentials
-
-Upon initial database seeding, a default Super Admin account is provisioned:
-
-- **Email**: `admin@gmail.com`
-- **Password**: `P@ssw0rd123!`
-- **Role**: `Admin`
-
----
-
 ## 📄 Documentation Index
 - [📘 Frontend API Integration & Complete Endpoints Reference Guide](docs/FRONTEND_API_INTEGRATION_GUIDE.md)
 
