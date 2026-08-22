@@ -1,6 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
 using VendorHub.DTOs.ReviewDto;
 using VendorHub.DTOs.sharedDto;
 using VendorHub.Extensions;

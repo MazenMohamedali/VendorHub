@@ -344,7 +344,7 @@ namespace VendorHub.Services
 
             var productIds = dto.CartItems.Select(ci => ci.ProductId).Distinct().ToList();
 
-            var products = await _productRepository.GetBy(p => productIds.Contains(p.Id)).ToDictionaryAsync(P => P.Id);
+            var products = await _productRepository.GetBy(p => productIds.Contains(p.Id)).ToDictionaryAsync(P => P.Id, cancellationToken);
 
             var orderItems = new List<OrderItem>();
             decimal totalPrice = 0;

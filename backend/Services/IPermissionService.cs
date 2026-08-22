@@ -39,5 +39,7 @@ namespace VendorHub.Services
             PermissionType type,
             CancellationToken cancellationToken = default);
         #endregion
+
+        Task AssignDefaultVendorPermissionsAsync(int vendorId, CancellationToken cancellationToken = default);
     }
 }

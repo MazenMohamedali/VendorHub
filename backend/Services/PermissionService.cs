@@ -169,6 +169,30 @@ namespace VendorHub.Services
                 throw;
             }
         }
+
         #endregion
+
+
+        public async Task AssignDefaultVendorPermissionsAsync(int vendorId, CancellationToken cancellationToken = default)
+        {
+            const PermissionType defaultVendorPermissions = PermissionType.VendorStaff;
+
+            var vendor = await _vendorRepository.GetByIdAsync(vendorId, cancellationToken);
+            if (vendor == null)
+            {
+                _logger.LogWarningWithContext("Cannot assign default permissions. VendorId {VendorId} not found.", new { VendorId = vendorId });
+                return;
+            }
+
+            vendor.Permission |= defaultVendorPermissions;
+            vendor.UpdatedAt = DateTime.UtcNow;
+
+            _vendorRepository.Update(vendor);
+            await _vendorRepository.SaveAsync(cancellationToken);
+
+            await _cacheService.RemoveAsync(CacheKeys.VendorPermissions(vendorId), cancellationToken);
+
+            _logger.LogInfoWithContext("Default vendor permissions successfully assigned to VendorId: {VendorId}", new { VendorId = vendorId });
+        }
     }
 }

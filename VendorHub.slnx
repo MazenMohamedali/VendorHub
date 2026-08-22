@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/VendorHub.csproj" />
+  </Folder>
+  <Project Path="VendorHub.UnitTests/VendorHub.UnitTests.csproj" />
+</Solution>

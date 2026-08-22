@@ -2,6 +2,7 @@
 
 [![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
+[![Unit Tests](https://img.shields.io/badge/Unit%20Tests-121%20Passed-brightgreen?style=for-the-badge&logo=xunit&logoColor=white)](VendorHub.UnitTests)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-CC292B?style=for-the-badge&logo=microsoftsqlserver&logoColor=white)](https://www.microsoft.com/sql-server/)
 [![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io/)
 [![Seq](https://img.shields.io/badge/Seq-Log--Server-564592?style=for-the-badge&logo=seq&logoColor=white)](https://datalust.co/seq)
@@ -197,7 +198,40 @@ ALL API responses from VendorHub follow a unified, predictable JSON contract (`G
 
 ---
 
-## 🧪 End-to-End API Test Suite (`api-tests/`)
+## 🧪 Comprehensive Unit Testing Suite (`VendorHub.UnitTests`)
+
+VendorHub features an extensive, production-grade test suite built with **xUnit**, **Moq**, **FluentAssertions**, and **MockQueryable.Moq**. Every test is strictly structured according to the **AAA (Arrange-Act-Assert)** pattern and covers positive paths, validation errors, authorization gates, EF Core async queries, optimistic concurrency conflicts, and two-level cache eviction.
+
+```bash
+# Run all unit tests from the solution root
+dotnet test
+```
+
+### 📊 Unit Test Coverage Summary (**121 / 121 Tests Passing**):
+
+| Test Suite | Tests | Domain Scenarios Covered |
+| :--- | :---: | :--- |
+| **`AccountServiceTests.cs`** | `18/18` | JWT generation, lockout policies, user roles, pending vendor states, registration rollbacks |
+| **`CategoryServiceTests.cs`** | `15/15` | Catalog queries, image updates, soft/hard deletion, L1/L2 cache invalidation |
+| **`ProductServiceTests.cs`** | `11/11` | Status workflows (Pending, Reviewed, Rejected, Archived), image swap, cache eviction |
+| **`OrderServiceTests.cs`** | `9/9` | Atomic checkout, inventory deduction, stock validations, multi-vendor status transitions |
+| **`PermissionServiceTests.cs`** | `12/12` | Bitmask flag operations, vendor staff permissions, authorization checks, cache purging |
+| **`ImageValidatorTests.cs`** | `17/17` | Binary magic bytes (PNG/JPEG/WebP), size boundaries, extension spoofing, corrupted streams |
+| **`NotificationServiceTests.cs`** | `11/11` | Real-time streams, pagination, unread queries, idempotent read toggles, user isolation |
+| **`ReviewServiceTests.cs`** | `6/6` | Verified purchaser checks, rating aggregation, duplicate prevention, review pagination |
+| **`VendorServiceTests.cs`** | `6/6` | Profile lookups, store details, concurrency fallbacks, paged vendor listings |
+| **`CustomerServiceTests.cs`** | `4/4` | Profile retrieval, customer address updates, user boundary checks |
+| **`FavoriteServiceTests.cs`** | `5/5` | Wishlist additions, unique constraint handling, removal, average star calculation |
+| **`StatisticsServiceTests.cs`** | `2/2` | Analytics caching, dynamic KPI compilation, vendor revenue & monthly sales stats |
+| **`DateGreaterThanAttributeTests.cs`** | `5/5` | Expiration vs. production date reflection validation, nullability, equal date guards |
+
+```text
+Passed!  - Failed: 0, Passed: 121, Skipped: 0, Total: 121, Duration: ~345 ms
+```
+
+---
+
+## 🔬 End-to-End API Integration Suite (`api-tests/`)
 
 VendorHub includes an automated Node.js integration runner covering **100% of all 12 controllers**:
 

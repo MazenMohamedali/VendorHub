@@ -12,6 +12,12 @@ services:
       - "1433:1433"
     volumes:
       - sqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${SA_PASSWORD}\" -C -Q \"SELECT 1\" || /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P \"$${SA_PASSWORD}\" -Q \"SELECT 1\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - vendorhub-net
     restart: always
@@ -21,6 +27,8 @@ services:
     container_name: vendorhub-redis
     ports:
       - "7082:6379"
+    volumes:
+      - redisdata:/data
     networks:
       - vendorhub-net
     restart: unless-stopped
@@ -41,10 +49,15 @@ services:
       Serilog__WriteTo__2__Args__serverUrl: "http://seq:80"
     ports:
       - "7081:8080"
+    volumes:
+      - api-images:/app/wwwroot/Images
     depends_on:
-      - mssql
-      - redis
-      - seq
+      mssql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      seq:
+        condition: service_started
     networks:
       - vendorhub-net
     restart: always
@@ -57,6 +70,8 @@ services:
       SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
     ports:
       - "5341:80"
+    volumes:
+      - seqdata:/data
     networks:
       - vendorhub-net
     restart: unless-stopped
@@ -76,6 +91,12 @@ services:
 
 volumes:
   sqldata:
+    driver: local
+  api-images:
+    driver: local
+  seqdata:
+    driver: local
+  redisdata:
     driver: local
 
 networks:

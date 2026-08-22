@@ -1,7 +1,7 @@
 // Disable SSL verification for local HTTPS/HTTP development
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-export const BASE_URL = process.env.BASE_URL || 'https://localhost:44342';
+export const BASE_URL = process.env.BASE_URL || 'http://localhost:7081';
 
 // Super Admin Credentials
 export const ADMIN_CREDENTIALS = {

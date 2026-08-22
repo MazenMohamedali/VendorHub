@@ -18,6 +18,6 @@ namespace VendorHub.Models
                       CanViewOrders | CanUpdateOrderStatus | CanCancelOrders |
                       CanViewAnalytics | CanViewProducts | CanManageInventory,
 
-        VendorStaff = CanViewProducts | CanViewOrders | CanUpdateOrderStatus | CanManageInventory
+        VendorStaff = CanViewProducts | CanViewOrders | CanUpdateOrderStatus | CanUploadProducts
     }
 }

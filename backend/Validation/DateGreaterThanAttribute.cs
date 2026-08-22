@@ -16,12 +16,10 @@ namespace VendorHub.Validation
                 validationContext.ObjectType
                 .GetProperty(_comparisonProperty)
                 ?.GetValue(validationContext.ObjectInstance);
-            if(value == null || comparisonValue == null)
+            if (value == null || comparisonValue == null)
                 return ValidationResult.Success;
 
-            if (value == comparisonValue ||
-                value is null || comparisonValue is null
-                || (DateTime)value < (DateTime)comparisonValue)
+            if ((DateTime)value <= (DateTime)comparisonValue)
                 return new ValidationResult(ErrorMessage ?? $"Date must be after {_comparisonProperty}");
 
             return ValidationResult.Success;

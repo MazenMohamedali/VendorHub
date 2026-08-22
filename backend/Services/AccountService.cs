@@ -323,7 +323,8 @@ namespace VendorHub.Services
                 return GeneralResponse.NotFound("Vendor not found");
 
             user.AccountStatus = AccountStatus.ACTIVE;
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync
+                (user);
 
             if(!result.Succeeded)
             {
@@ -333,10 +334,7 @@ namespace VendorHub.Services
             if (result.Succeeded)
             {
                 _logger.LogInformation("Vendor identity updated to Active status. Assigning core permissions.");
-                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanViewProducts, cancellationToken);
-                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanViewOrders, cancellationToken);
-                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanUpdateOrderStatus, cancellationToken);
-                await _permissionService.EnablePermissionForVendorAsync(vendorId, PermissionType.CanUploadProducts, cancellationToken);
+                await _permissionService.AssignDefaultVendorPermissionsAsync(vendorId, cancellationToken);
             }
 
             return HandleIdentityResult(result, "Vendor approved successfully");
